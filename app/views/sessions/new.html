@@ -1,0 +1,47 @@
+<div class = "container">
+    <div class = "row">
+        <div class = "col col-lg-12">
+          <h2 style = "display:inline-block;">Register</h2>      
+          <% if flash[:errors] %>
+          <div class="alert alert-danger">
+            <% flash[:errors].each do |note| %>
+              <p id="notice"><%= note %></p>  
+            <% end %>
+          </div>
+          <% end %>
+          <form action = "/users" method = "POST">
+              <input type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
+              <span>Name</span>
+              <input type = "text" name = "name" id = "name" class = 'form-control'>
+              <br>
+              <br>
+              <span>Email</span>
+              <input type = "text" name = "email" id = "email" class = 'form-control'>
+              <br>
+              <span>Password</span>
+              <input type = "password" name = "password" id = "password" class = 'form-control'>
+              <br>
+              <span>Password Confirmation</span>
+              <input type = "password" name = "password_Confirmation" id = "password_Confirmation" class = 'form-control'>
+              <br>
+              <input type = "submit" name = "join" id = "join" value = "Register" class = "btn btn-primary">
+          </form>
+          <h2 style = "display:inline-block;">Login</h2>
+          <% if flash[:messages] %>
+            <% flash[:messages].each do |note| %>
+              <p id="notice"><%= note %></p>  
+            <% end %>
+          <% end %>
+          <form action = "/sessions" method = "POST">
+              <input type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
+              <span>Email</span>
+              <input type = "text" name = "Email" id = "Email" class = 'form-control'>
+              <br>
+              <span>Password</span>
+              <input type = "password" name = "Password" id = "Password" class = 'form-control'>
+              <br>
+              <input type = "submit" value = "Log In" class = "btn btn-primary">
+          </form>
+        </div>
+      </div>
+    </div>

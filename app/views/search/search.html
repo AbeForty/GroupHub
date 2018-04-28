@@ -1,0 +1,49 @@
+<div class = "container">
+    <div class = "row">
+        <div class = "col col-lg-12">
+            <% if !current_user %>
+                <div class="alert alert-warning">
+                    Create an account or log in to get the full functionality of GroupHub™.
+                </div>
+            <%end%>
+            <% if @type == "project" %>
+                <% if @search.length > 1 || @search.length == 0 %> 
+                    <h1><%=@search.length.to_s%> projects match '<%=@query%>'</h1>
+                <%elsif @search.length == 1%>
+                    <h1><%=@search.length.to_s%> project matches '<%=@query%>'</h1>
+                <%end%>
+                <% if @search.length > 0 %>
+                    <% @search.each do |project|%>
+                        <span class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <a href="/projects/<%=project.id%>" class="card-link"><h3 class="card-title" style = "color:dodgerblue"><%=project.title%></h3></a>
+                                <a href ="/users/<%=project.user.id%>"><h6 class="card-subtitle mb-2 text-muted"><%=project.user.name%></h6></a>
+                                <p class="card-text"><%=project.description%></p>
+                                <h6 class="card-subtitle mb-2 text-muted"><%=project.created_at%></h6>                
+                            </div>
+                        </span>
+                    <%end%>
+                <%else%>
+                    <p>No projects match your search.</p>
+                <%end%>
+            <% elsif @type == "user" %>
+                <% if @search.length > 1 || @search.length == 0 %> 
+                    <h1><%=@search.length.to_s%> users match '<%=@query%>'</h1>
+                <%elsif @search.length == 1%>
+                    <h1><%=@search.length.to_s%> user matches '<%=@query%>'</h1>
+                <%end%>
+                <% if @search.length > 0 %>
+                    <% @search.each do |user|%>
+                        <span class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <a href="/users/<%=user.id%>" class="card-link"><h3 class="card-title" style = "color:dodgerblue"><%=user.name%></h3></a>                                 
+                            </div>
+                        </span>
+                    <%end%>
+                <%else%>
+                    <p>No users match your search.</p>
+                <%end%>
+            <% end %>
+        </div>
+    </div>
+</div>

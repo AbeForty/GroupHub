@@ -1,0 +1,47 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any styles
+ * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+ * file per style scope.
+ *
+ *= require bootstrap.min
+ *= require_tree .
+ *= require_self
+ */
+ *{
+     font-family: "Bahnschrift Semibold" !important;
+    }
+a{
+    color:dodgerblue;
+}
+.blueTitle{
+    color:dodgerblue;
+}
+.btn-primary{
+    background-color:dodgerblue !important;
+}
+
+.card{
+    /* box-sizing: border-box !important;
+    border: 1px solid darkgray !important;
+    border-radius: 5px !important; */
+    display: inline-block !important;
+    margin-right: 10px !important; 
+    vertical-align: top !important;
+}
+.hubLogo{
+    color:dodgerblue;    
+}
+/* .navbar-nav{
+    background-color: white !important;
+} */
+@font-face {
+    font-family: "Bahnschrift";
+    src: url(/assets/bahnschrift.ttf);
+  }

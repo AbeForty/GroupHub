@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GroupHub</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+<% if current_user %>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">Group<span class="hubLogo">Hub</span></a>
+    </div>
+    <ul class="nav navbar-nav">
+      <% if request.path == '/dashboard' %>
+        <li class="active"><a href="/dashboard">HOME</a></li>
+      <%else%>
+          <li><a href="/dashboard">HOME</a></li>
+      <% end %>
+      <% if request.path == '/projects' %>
+        <li class = "active"><a href="/projects">YOUR PROJECTS</a></li>
+      <%else%>
+        <li><a href="/projects">YOUR PROJECTS</a></li>
+      <% end %>
+      <% if request.path == '/projects/all' %>
+        <li class = "active"><a href="/projects/all">EXPLORE</a></li>
+      <%else%>
+        <li><a href="/projects/all">EXPLORE</a></li>
+      <% end %>
+      <% if request.path == '/users/'+ current_user.id.to_s %>
+        <li class ="active"><a href="/users/<%=current_user.id.to_s%>">YOUR PROFILE</a></li>
+      <%else%>
+        <li><a href="/users/<%=current_user.id.to_s%>">YOUR PROFILE</a></li>
+      <%end%>
+    </ul> 
+    <ul class="nav navbar-nav navbar-right">
+     <form class="navbar-form navbar-left" action="/search" method = "POST">
+        <input type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
+          <% if @type != 'user'%>
+            <input type = "radio" name = "searchoption" value = "Projects" checked = "checked" id = "projects"> <label for="projects">Projects</label>
+            <input type = "radio" name = "searchoption" value = "Users" id = "users"> <label for="users">Users</label>
+          <% else %>
+            <input type = "radio" name = "searchoption" value = "Projects" id = "projects"> <label for="projects">Projects</label>
+            <input type = "radio" name = "searchoption" value = "Users"checked = "checked" id = "users"> <label for="users">Users</label>
+          <% end %>
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Search" name = "search_query">
+          <div class="input-group-btn">
+            <button class="btn btn-default" type="submit">
+              Search
+            </button>            
+          </div>
+        </div>
+      </form> 
+      <li><a href="/users/<%=current_user.id%>"><%=current_user.name%></a></li>
+      <li><a href="/sessions/destroy" data-method = "delete">LOGOUT</a></li>
+    </ul>
+  </div>
+</nav>
+<%else%>
+  <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">Group<span class="hubLogo">Hub</span></a>
+    </div>
+    <ul class="nav navbar-nav">
+      <% if request.path == '/projects/all' %>
+        <li class = "active"><a href="/projects/all">EXPLORE</a></li>
+      <%else%>
+        <li><a href="/projects/all">EXPLORE</a></li>
+      <% end %>
+    </ul> 
+    <ul class="nav navbar-nav navbar-right">
+      <form class="navbar-form navbar-left" action="/search" method ="POST">
+        <input type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
+          <% if @type != 'user'%>
+            <input type = "radio" name = "searchoption" value = "Projects" checked = "checked" id = "projects"> <label for="projects">Projects</label>
+            <input type = "radio" name = "searchoption" value = "Users"> <label for="users" id = "users">Users</label>
+          <% else %>
+            <input type = "radio" name = "searchoption" value = "Projects" id = "projects"> <label for="projects">Projects</label>
+            <input type = "radio" name = "searchoption" value = "Users"checked = "checked" id = "users"> <label for="users">Users</label>
+          <% end %>
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Search" name = "search_query">
+          <div class="input-group-btn">
+            <button class="btn btn-default" type="submit">
+              Search
+            </button>         
+          </div>
+        </div>
+      </form> 
+      <li><a href="/">GUEST</a></li>
+      <% if request.path == '/' %>
+        <li class = "active"><a href="/">SIGN UP/LOGIN</a></li>
+      <%else%>
+        <li><a href="/">SIGN UP/LOGIN</a></li>
+      <%end%>
+    </ul>
+  </div>
+</nav>
+<% end %>
+
+<%= yield %>
+</body>
+</html>

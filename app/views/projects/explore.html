@@ -1,0 +1,34 @@
+<div class = "container">
+    <div class = "row">
+        <div class = "col col-lg-12">
+            <% if !current_user %>
+                <div class="alert alert-warning">
+                    Create an account or log in to get the full functionality of GroupHub.
+                </div>
+            <%end%>
+            <h1>Explore All Projects</h1>
+            <% if @projects.length > 0 %>
+                <% @projects.each do |project|%>
+                    <span class="card" style="width: 20rem;">
+                        <div class="card-body">
+                            <a href="/projects/<%=project.id%>" class="card-link"><h3 class="card-title blueTitle"><%=project.title%></h3></a>
+                            <a href="/users/<%=project.user.id%>"><h6 class="card-subtitle mb-2 text-muted"><%=project.user.name%></h6></a>
+                            <p class="card-text"><%=project.description%></p>
+                            <h6 class="card-subtitle mb-2 text-muted"><%=project.created_at.strftime("%b %d, %Y")%></h6> 
+                            <% if current_user %>
+                                <% if !project.users.include?(current_user) && !project.waitlisters.include?(User.find(current_user)) && project.user != current_user %>
+                                    <a href = "/projects/<%=project.id%>/join/<%=current_user.id%>" data-method = "patch">Join</a>
+                                <% elsif project.waitlisters.include?(User.find(current_user)) %>
+                                    <p>Waiting for Approval</p>
+                                <%else%>
+                                <% end %>
+                            <% end %>             
+                        </div>
+                    </span>
+                <%end%>
+            <%else%>
+                <p>No projects exist yet. Create the first project now.</p>
+            <%end%>
+        </div>
+    </div>
+</div>

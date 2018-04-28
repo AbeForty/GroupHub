@@ -1,0 +1,31 @@
+<div class = "container">
+    <div class = "row">
+        <div class = "col col-lg-12">
+            <h1>Update <%=@project.title%></h1>
+            <form action = "/projects/<%=@project.id%>" method = "POST">
+                <input class = 'form-control' type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
+                <input class = 'form-control'type = "hidden" name = "_method" value = "patch">
+                <span>Project Name</span>
+                <input class = 'form-control' type = "text" name = "title" placeholder = "Name your project" value = "<%=@project.title%>">
+                <br>
+                <br>
+                <label style = "vertical-align: top;">Project Description</label>
+                <textarea class = 'form-control' name = "description" placeholder="Describe your project"><%=@project.description%></textarea>
+                <br>
+                <br>
+                <label style = "vertical-align: top;">Group Members</label>
+                <select class = 'form-control' multiple = "multiple" name = "members[]">
+                    <% @users.each do |member|%>
+                        <%if @project.users.include?(member) || @project.user == member %>
+                            <option value = "<%=member.id%>" selected="selected"><%=member.name%></option>
+                        <%else%>
+                            <option value = "<%=member.id%>"><%=member.name%></option>
+                        <%end%>
+                    <%end%>
+                </select>
+                <br>
+                <button class = "btn btn-primary">Update Project</button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,18 @@
+<div class = "container">
+    <div class = "row">
+        <div class = "col col-lg-12">
+            <h1>Edit your profile</h1>
+            <form action = "/users/<%=@user.id%>" method = "POST">
+                <input type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
+                <input type = "hidden" name = "_method" value = "patch">
+                <span>Name</span>
+                <input type = "text" name = "name" id = "name" class = 'form-control' value = "<%=@user.name%>">
+                <br>
+                <span>Email</span>
+                <input type = "text" name = "email" id = "email" class = 'form-control' value = "<%=@user.email%>">
+                <br>
+                <input type = "submit" name = "join" id = "join" value = "Update" class = "btn btn-primary">
+            </form>
+        </div>
+    </div>
+</div>
