@@ -26,7 +26,7 @@
                 <br>
                 <span>Assign to:</span>
                 <select class = 'form-control' name = "owner">            
-                    <option value = <%=@project.id%>><%=@project.user.name%></option>
+                    <option value = <%=@project.user.id%>><%=@project.user.name%></option>
                     <%= @member.each do |member|%>
                         <option value = "<%=member.id%>"><%=member.name%></option>
                     <%end%>

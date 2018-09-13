@@ -7,8 +7,7 @@ Rails.application.routes.draw do
   end
   get 'users/new' => 'users#new'
   post 'users' => 'users#create'
-  get 'users/:id' => 'users#show'
-  get '/' => 'sessions#new'
+  get 'users/:id' => 'users#show'  
   delete 'sessions/destroy' => 'sessions#destroy'
   post 'sessions' => 'sessions#create'
   get 'users/:id/edit' => 'users#edit'
@@ -18,8 +17,8 @@ Rails.application.routes.draw do
   patch '/projects/:project_id/join/:user_id' => 'projects#join'
   patch '/projects/:project_id/accept/:user_id' => 'projects#accept'
   patch '/projects/:project_id/decline/:user_id' => 'projects#decline'
-
-
+  get '/' => 'sessions#new'
+  get "*path" => redirect("/")
   
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
