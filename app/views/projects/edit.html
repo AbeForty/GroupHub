@@ -1,31 +1,75 @@
-<div class = "container">
-    <div class = "row">
-        <div class = "col col-lg-12">
-            <h1>Update <%=@project.title%></h1>
-            <form action = "/projects/<%=@project.id%>" method = "POST">
-                <input class = 'form-control' type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
-                <input class = 'form-control'type = "hidden" name = "_method" value = "patch">
-                <span>Project Name</span>
-                <input class = 'form-control' type = "text" name = "title" placeholder = "Name your project" value = "<%=@project.title%>">
+<div class = "main">
+    <div class = "container">
+        <div class = "row">
+            <div class = "col col-lg-12">
                 <br>
-                <br>
-                <label style = "vertical-align: top;">Project Description</label>
-                <textarea class = 'form-control' name = "description" placeholder="Describe your project"><%=@project.description%></textarea>
-                <br>
-                <br>
-                <label style = "vertical-align: top;">Group Members</label>
-                <select class = 'form-control' multiple = "multiple" name = "members[]">
-                    <% @users.each do |member|%>
-                        <%if @project.users.include?(member) || @project.user == member %>
-                            <option value = "<%=member.id%>" selected="selected"><%=member.name%></option>
-                        <%else%>
-                            <option value = "<%=member.id%>"><%=member.name%></option>
+                <a href = "/projects/<%=@project.id%>">🡨 Return to <%=@project.title%> details</a>
+                <h1>Update <%=@project.title%></h1>
+                <form action = "/projects/<%=@project.id%>" method = "POST">
+                    <input class = 'form-control' type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
+                    <input class = 'form-control'type = "hidden" name = "_method" value = "patch">
+                    <span>Project Name</span>
+                    <input class = 'form-control' type = "text" name = "title" placeholder = "Name your project" value = "<%=@project.title%>">
+                    <br>
+                    <br>
+                    <label style = "vertical-align: top;">Project Description</label>
+                    <textarea class = 'form-control' name = "description" placeholder="Describe your project"><%=@project.description%></textarea>
+                    <br>
+                    <br>
+                    <label style = "vertical-align: top;">Project Visibility</label>
+                    <select class = 'form-control' name = "visibilityFlag">
+                        <%= @visibilityFlags.each do |flag|%>
+                            <%if @project.visibility_flags_id != flag.id%>
+                                <option value = "<%=flag.id%>"><%=flag.flag%></option>
+                            <%elsif @project.visibility_flags_id == flag.id || @project.visibility_flags_id == nil %>
+                                <option value = "<%=flag.id%>" selected="selected"><%=flag.flag%></option>
+                            <%end%>
                         <%end%>
+                    </select>                    
+                    <br>
+                    <br>
+                    <span>Due Date:</span>
+                    <input class = 'form-control' type = "date" name = "duedate" value = "<%=@project.duedate%>">
+                    <% if current_organization != nil %>
+                    <br>
+                    <br>
+                    <label style = "vertical-align: top;">Organization</label>
+                    <select class = 'form-control' name = "organization">
+                        <option value = "0">None</option>
+                        <%= @Organizations.each do |organization|%>
+                            <% if organization.id == @projectOrgID %>
+                                <option value = "<%=organization.id%>" selected="selected"><%=organization.name%></option>
+                            <% else %>
+                                <option value = "<%=organization.id%>"><%=organization.name%></option>
+                            <% end %>
+                        <%end%>
+                    </select>      
                     <%end%>
-                </select>
-                <br>
-                <button class = "btn btn-primary">Update Project</button>
-            </form>
+                    <br>
+                    <br>
+                    <label style = "vertical-align: top;">Group Members</label>
+                    <select class = 'form-control' multiple = "multiple" name = "members[]">
+                        <% @users.each do |member|%>
+                            <%if @project.users.include?(member) || @project.user == member %>
+                                <option value = "<%=member.id%>" selected="selected"><%=member.name%></option>
+                            <%else%>
+                                <option value = "<%=member.id%>"><%=member.name%></option>
+                            <%end%>
+                        <%end%>
+                    </select>
+                    <br>
+                    <a href="/projects/<%=@project.id%>/status/">Edit Status Options</a>
+                    <br>
+                    <a href="/projects/<%=@project.id%>/priority/">Edit Priority Levels</a>
+                    <br>
+                    <a href="/projects/<%=@project.id%>/tags/">Edit Tags</a>
+                    <br>
+                    <br>
+                    <button class = "btn btn-primary">Update Project</button>
+                    <br>
+                    <br>
+                </form>
+            </div>
         </div>
     </div>
 </div>

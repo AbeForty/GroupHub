@@ -1,136 +1,266 @@
-<div class = "container">
-    <div class = "row">
-        <div class = "col col-lg-12">
-            <% if !current_user %>
+<div class = "main">
+    <div class="container">
+        <div class="row">
+            <div class="col col-lg-12">
+                <% if !current_user %>
+                <br>
                 <div class="alert alert-warning">
-                    Create an account or log in to get the full functionality of GroupHub.
+                    Create an account or log in to create your own projects on GroupHub.
                 </div>
-            <%end%>
-            <% if @project %>
-                <div class = "container">
-                    <div class = "row">
-                        <div class = "col col-lg-8">
-                            <div id = "project-details">
-                                <h1 class="blueTitle" style = "display:inline-block;"><%=@project.title%></h1>
+                <%end%>
+                <% if @project %>
+                <div class="container">
+                    <div class="row">
+                        <div class="col col-lg-12">
+                            <div id="project-details">
+                                <h1 class="blueProjectTitle" style="display:inline-block;"><%=@project.title%></h1>
                                 <% if current_user == @project.user%>
-                                    <span><a href="/projects/<%=@project.id%>/edit">Edit</a></span>
+                                <a href="/projects/<%=@project.id%>/edit">Edit</a>
+                                <%else%>
+                                    <% if current_user %>
+                                        <% if !@project.users.include?(current_user) && !@project.waitlisters.include?(User.find(current_user)) && @project.user != current_user %>
+                                            <a href="/projects/<%=@project.id%>/join/<%=current_user.id%>" data-method="patch">Join</a>
+                                        <% elsif @project.waitlisters.include?(User.find(current_user)) %>
+                                            <p>Waiting for Approval</p>
+                                        <%else%>
+                                        <% end %>
+                                    <% end %>
                                 <%end%>
-                                <a href="/users/<%=@project.user.id%>"><h4 class="card-subtitle mb-2 text-muted"><%=@project.user.name%></h4></a>
-                                <h5><%=@project.description%></h5>
+                                <a href="/users/<%=@project.user.id%>">
+                                    <h5 class="card-subtitle mb-2 text-muted"><%=@project.user.name%></h5>
+                                </a>
+                                <h5><%=@project.description%> | Due Date:
+                                    <%if @project.duedate != nil %>
+                                        <%=@project.duedate.strftime("%b %d, %Y")%>
+                                    <%else%>
+                                        None
+                                    <%end%>
+                                </h5>
                                 <br>
-                                <h4>Collaborators: </h4>
-                                <% @project.members.each do |member|%>
-                                    <a href="/users/<%=member.user.id%>"><p><%=member.user.name%></p></a>
-                                <%end%>
-                           
+                                <div id="collabDiv">
+                                    <h4 style="color:dodgerblue">Collaborators:</h4>
+                                    <% if @project.members.length > 0 %>
+                                        <% @project.members.each do |member|%>
+                                            <a class ="collabUserBox" href="/users/<%=member.user.id%>">
+                                                <span>
+                                                    <p class="profileCircle"><img class="profileIcon" src="<%=image_path("PersonIcon.svg")%>"></p>
+                                                    <p class="collabUserText"><%=member.user.name%></p>
+                                                </span>                                                
+                                            </a>
+                                        <%end%>
+                                    <%else%>
+                                        <span>There are no additional collaborators.</span>
+                                    <%end%>
+                                    <% if current_user == @project.user %>
+                                        <span id="waitlist">
+                                            <% if @project.waitlisters.length > 0%>
+                                                <% @project.waitlisters.each do |waitlister| %>
+                                                    <span style="display:inline-block; vertical-align:top; margin-right:20px;">                                        
+                                                            <p class="profileCircle"><img style="height: 50px; width:50px;" src="<%=image_path("PersonIcon.svg")%>"></p>
+                                                            <a class ="waitlisterUserText" href="/users/<%=waitlister.id%>"><p class="collabUserText"><%=waitlister.name%></p></a>
+                                                                <p id="acceptDiv">
+                                                                    <a style="color:green" href="/projects/<%=@project.id%>/accept/<%=waitlister.id%>"
+                                                                        data-method="patch">Accept</a>
+                                                                    <a style="color:red" href="/projects/<%=@project.id%>/decline/<%=waitlister.id%>"
+                                                                        data-method="patch">Decline</a>
+                                                                </p>
+                                                        </span>
+                                                <%end%>
+                                            <%end%>
+                                        </span>
+                                    <%end%>
+                                </div>      
+                                <br>
+                                <div id="milestoneDiv">
+                                <%if current_user%>
+                                    <% if @project.members.include?(Member.find_by(user: current_user, project:@project)) || @project.user == current_user %>
+                                        <div id="milestones">
+                                            <h2 style="display: inline-block">Milestones</h2>
+                                            <% if @project.milestones.length > 0 %>
+                                                <a href="/projects/<%=@project.id%>/milestones">View All</a>                                     
+                                            <%end%>
+                                            <br>    
+                                            <a href="/projects/<%=@project.id%>/milestones/new">New Milestone</a>
+                                            <br>
+                                            <br>
+                                        <div id="milestone-list">
+                                            <% if @project.milestones.length > 0 %>
+                                            <% @project.milestones.each do |milestone|%>
+                                            <div class="card" style="width: 20rem; height: 24rem;" onclick="window.location.href='/projects/<%=@project.id%>/milestones/<%=milestone.id%>'">
+                                                <div class="card-body">
+                                                    <a href="/projects/<%=@project.id%>/milestones/<%=milestone.id%>"
+                                                        class="card-link">
+                                                        <h4 class="card-title blueTitle" title="<%=milestone.title%>"><%=milestone.title%></h4>
+                                                    </a>
+                                                    <p class="card-text" title="<%=milestone.description%>"><%=milestone.description%></p>
+                                                    <p>Due Date: <%=milestone.duedate.strftime("%b %d, %Y")%></p>
+                                                    <p class="percentProgress">Percent Complete:</p>
+                                                    <span class="progressBKG" style="background-color:gainsboro;height:25px;">
+                                                        <% if milestone.tasks.length != 0 %>
+                                                            <% if ((milestone.tasks.where(status: 6).length / milestone.tasks.length.to_f) * 100).round(2) <= 50.00 %>
+                                                                <p class="progressRed"style="width:<%=(((milestone.tasks.where(status: 6).length / milestone.tasks.length.to_f)) * 100).round(2)%>%;"><%=(((milestone.tasks.where(status: 6).length / milestone.tasks.length.to_f)) * 100).round(2)%>%</p>
+                                                            <%elsif ((milestone.tasks.where(status: 6).length / milestone.tasks.length.to_f) * 100).round(2) > 50.00 and ((milestone.tasks.where(status: 6).length / milestone.tasks.length.to_f) * 100).round(2) < 75.00 %>
+                                                                <p class="progressYellow"style="width:<%=(((milestone.tasks.where(status: 6).length / milestone.tasks.length.to_f)) * 100).round(2)%>%;"><%=(((milestone.tasks.where(status: 6).length / milestone.tasks.length.to_f)) * 100).round(2)%>%</p>
+                                                            <%elsif ((milestone.tasks.where(status: 6).length / milestone.tasks.length.to_f) * 100).round(2) >= 75.00 %>
+                                                                <p class="progressGreen"style="width:<%=(((milestone.tasks.where(status: 6).length / milestone.tasks.length.to_f)) * 100).round(2)%>%;"><%=(((milestone.tasks.where(status: 6).length / milestone.tasks.length.to_f)) * 100).round(2)%>%</p>
+                                                            <%end%>                                                
+                                                        <% else %>
+                                                            <span class="progressBKG" style="background-color:gainsboro;height:25px;"><p class="progressGreen"style="width:0px;">0.0%</p></span>
+                                                        <% end %>        
+                                                    </span>                                
+                                                </div>
+                                            </div>
+                                            <%end%>
+                                            <%else%>
+                                            <p>No milestones exist yet. Create a milestone now.</p>
+                                            <% end %>
+                                        </div>
+                                        </div>
+                                        <br>                            
+                                    <%else%>
+                                        <p class="blueTitle">To see the tasks and milestones for this project, you must be a member of this
+                                            project. Click the Join link on the project to request membership in this project.
+                                        </p>
+                                    <%end%>
+                                    <%else%>
+                                        <p class="blueTitle">To see the tasks and milestones for this project, you must be a user of GroupHub and a member of this
+                                            project. Sign up for a GroupHub account and click the Join link on the project to request membership in this project.
+                                        </p>
+                                    <%end%>
                             </div>
-                        </div>
-                        <div class = "col col-lg-4" >
-                            <div id = "tasks">
-                                <% if @project.members.include?(Member.find_by(user: current_user)) || @project.user == current_user %>
-                                    <h2 style ="display: inline-block">Unfinished Tasks</h2>
-                                        <a href = "/projects/<%=@project.id%>/tasks">View All</a>
-                                        <br>
-                                        <a href = "/projects/<%=@project.id%>/tasks/new">Add Task</a>
-                                        <br>
-                                        <div id = "task-list" style = "overflow:auto; overflow-x: hidden; height: 300px;">
-                                            <% if @project.tasks.length > 0%>
-                                                <% @project.tasks.each do |task|%>
-                                                    <% if task.status != 3%>
-                                                        <span class="card" style="width: 20rem;">
-                                                            <div class="card-body">
-                                                                <a href="/projects/<%=@project.id%>/tasks/<%=task.id%>" class="card-link"><h3 class="card-title blueTitle"><%=task.title%></h3></a>
-                                                                <a href="/users/<%=task.user.id%>"><h6 class="card-subtitle mb-2 text-muted"><%=task.user.name%></h6></a>
-                                                                <p class="card-text"><%=task.description%></p>
-                                                                <%if task.user == current_user %>
-                                                                    <form action = "/projects/<%=@project.id%>/tasks/<%=task.id%>/status" method = "POST">
-                                                                        <input type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
-                                                                        <input type = "hidden" name = "_method" value = "patch">
-                                                                            <select name = "status" id = "status">
-                                                                                <% if task.status == 1 %>
-                                                                                    <option value = "1" selected = "selected">Not started</option>
-                                                                                    <option value = "2">In progress</option>
-                                                                                    <option value = "3">Complete</option>
-                                                                                <% end %>
-                                                                                <% if task.status == 2 %>
-                                                                                    <option value = "1">Not started</option>
-                                                                                    <option value = "2" selected = "selected">In progress</option>
-                                                                                    <option value = "3">Complete</option>
-                                                                                <% end %>
-                                                                                <% if task.status == 3 %>
-                                                                                    <option value = "1">Not started</option>
-                                                                                    <option value = "2">In progress</option>
-                                                                                    <option value = "3" selected = "selected">Complete</option>
-                                                                                <% end %>                                
-                                                                            </select>
-                                                                            <br>
-                                                                            <br>
-                                                                            <button class = "btn btn-primary">Update Status</button>
-                                                                        </form>
-                                                                        <%else%>
-                                                                            <select name = "status" id = "status" disabled = "disabled">
-                                                                                <% if task.status == 1 %>
-                                                                                    <option value = "1" selected = "selected">Not started</option>
-                                                                                    <option value = "2">In progress</option>
-                                                                                    <option value = "3">Complete</option>
-                                                                                <% end %>
-                                                                                <% if task.status == 2 %>
-                                                                                    <option value = "1">Not started</option>
-                                                                                    <option value = "2" selected = "selected">In progress</option>
-                                                                                    <option value = "3">Complete</option>
-                                                                                <% end %>
-                                                                                <% if task.status == 3 %>
-                                                                                    <option value = "1">Not started</option>
-                                                                                    <option value = "2">In progress</option>
-                                                                                    <option value = "3" selected = "selected">Complete</option>
-                                                                                <% end %>                                
-                                                                            </select>
-                                                                        <%end%>
-                                                                <!-- <script>
+                            <% if @project.members.include?(Member.find_by(user: current_user, project:@project)) || @project.user == current_user %>
+                        <div id="tasks">
+                            <h2 style="display: inline-block">Unfinished Tasks</h2>
+                            <a href="/projects/<%=@project.id%>/tasks">View All</a>
+                            <br>
+                            <a href="/projects/<%=@project.id%>/tasks/new">Add Task</a>
+                            <br>
+                            <br>
+                            <div id="unfinished-task-list">
+                                <br>
+                                <% if @project.tasks.length > 0%>
+                                <% @project.tasks.where.not(status: StatusType.find_by(title:"Complete").id).each do |task|%>
+                                <% if task.status != 3%>
+                                <span class="card unfinishedTaskCard" onclick="window.location.href = '/projects/<%=@project.id%>/tasks/<%=task.id%>'">
+                                    <div class="card-body">
+                                        <div class="statusFlag" style="background-color:<%=StatusType.find(task.status).color%>;"><a href="/search/status:<%=StatusType.find(task.status).title%>"><%=StatusType.find(task.status).title%></a></div>
+                                        <a href="/projects/<%=@project.id%>/tasks/<%=task.id%>" class="card-link">
+                                            <h3 class="card-title blueTitle" title="<%=task.title%>"><%=task.title%></h3>
+                                        </a>
+                                        <a href="/users/<%=task.user.id%>" onclick="event.stopPropagation();">
+                                            <h6 class="card-subtitle mb-2 text-muted"><%=task.user.name%></h6>
+                                        </a>
+                                        <p class="card-text twoLineText" title="<%=task.description%>"><%=task.description%></p>
+                                        <%if task.user == current_user %>
+                                        <form action="/projects/<%=@project.id%>/tasks/<%=task.id%>/status"
+                                            method="POST">
+                                            <input type="hidden" name="authenticity_token"
+                                                value="<%= form_authenticity_token%>">
+                                            <input type="hidden" name="_method" value="patch">
+                                            <select name = "status" id = "status">
+                                                <% if @status != nil %>
+                                                    <%@status.each do |status|%>
+                                                        <% if task.status == status.id%>
+                                                            <option value = "<%=status.id%>" selected = "selected"><%=status.title%></option>
+                                                        <% else %>
+                                                            <option value = "<%=status.id%>"><%=status.title%></option>
+                                                        <%end%>
+                                                    <%end%>  
+                                                <%end%>
+                                                <% if @statusAll != nil %>
+                                                    <%@statusAll.each do |status|%>
+                                                        <% if task.status == status.id%>
+                                                            <option value = "<%=status.id%>" selected = "selected"><%=status.title%></option>
+                                                        <% else %>
+                                                            <option value = "<%=status.id%>"><%=status.title%></option>
+                                                        <%end%>
+                                                    <%end%>
+                                                <%end%>            
+                                            </select>
+                                            <br>
+                                            <br>
+                                            <button class="btn btn-primary">Update Status</button>
+                                        </form>
+                                        <%else%>
+                                        <select name = "status" id = "status" disabled="disabled">
+                                            <% if @status != nil %>
+                                                <%@status.each do |status|%>
+                                                    <% if task.status == status.id%>
+                                                        <option value = "<%=status.id%>" selected = "selected"><%=status.title%></option>
+                                                    <% else %>
+                                                        <option value = "<%=status.id%>"><%=status.title%></option>
+                                                    <%end%>
+                                                <%end%>  
+                                            <%end%>
+                                            <% if @statusAll != nil %>
+                                                <%@statusAll.each do |status|%>
+                                                    <% if task.status == status.id%>
+                                                        <option value = "<%=status.id%>" selected = "selected"><%=status.title%></option>
+                                                    <% else %>
+                                                        <option value = "<%=status.id%>"><%=status.title%></option>
+                                                    <%end%>
+                                                <%end%>
+                                            <%end%>    
+                                        </select>
+                                        <%end%>
+                                        <!-- <script>
                                                                     $('#status').val()
                                                                 </script> -->
-                                                                <h6 class="card-subtitle mb-2 text-muted"><%=task.duedate.strftime("%b %d, %Y")%></h6>                
-                                                            </div>
-                                                        </span>
+                                            <%if task.duedate != nil%>
+                                                <h6 class="card-subtitle mb-2 text-muted">Due Date: <%=task.duedate.strftime("%b %d, %Y")%></h6> 
+                                            <%else%>
+                                                <h6 class="card-subtitle mb-2 text-muted">Due Date: None</h6> 
+                                            <%end%>
+                                            <%if PriorityType.find_by(id: task.PriorityType_id) != nil%>
+                                                <h6 class="card-subtitle mb-2 text-muted">Priority: <%=PriorityType.find_by(id: task.PriorityType_id).title%></h6>
+                                            <%else%>
+                                                <h6 class="card-subtitle mb-2 text-muted">Priority: None</h6>
+                                            <%end%>
+                                            Tags:
+                                            <% if TagTask.where(task_id:task.id).length != 0%>
+                                                <%TagTask.where(task_id:task.id).each do |tag|%>
+                                                    <%if tag == TagTask.where(task_id:task.id).last%>
+                                                        <span><a href="/search/tag:<%=Tag.find(tag.tag_id).title%>"><%=Tag.find(tag.tag_id).title%></a></span>
+                                                    <%else%>
+                                                        <span><a href="/search/tag:<%=Tag.find(tag.tag_id).title%>"><%=Tag.find(tag.tag_id).title%>,</a></span>
                                                     <%end%>
                                                 <%end%>
                                             <%else%>
-                                                <p>There are no tasks for this project yet.</p>
+                                                None
                                             <%end%>
-                                        </div>
+                                            <% if task.milestone.try(&:title)%>
+                                                <p class="milestoneText">Milestone: <a href ="/projects/<%=@project.id%>/milestones/<%=task.milestone.id%>"><%=task.milestone.try(&:title)%></a></p>
+                                            <%else%>
+                                                <span class="milestoneText">Milestone: None</span>
+                                            <%end%>
+                                    </div>
+                                </span>
+                                <%end%>
+                                <%end%>
                                 <%else%>
+                                    <p>There are no tasks for this project yet.</p>
                                 <%end%>
                             </div>
-                            <% if current_user == @project.user %>
-                                <div id = "waitlist" style = "overflow:auto; overflow-x: hidden; height: 300px;">
-                                    <h2 style ="display: inline-block">Users on the waitlist</h2>
-                                    <% if @project.waitlisters.length > 0%>
-                                        <% @project.waitlisters.each do |waitlister| %>
-                                            <div class="card" style="width: 20rem;">
-                                                <div class="card-body">
-                                                    <a href="/users/<%=waitlister.id%>"><h4 class="card-subtitle mb-2 text-muted"><%=waitlister.name%></h4></a>
-                                                    <a href = "/projects/<%=@project.id%>/accept/<%=waitlister.id%>" data-method = "patch">Accept</a>
-                                                    <a href = "/projects/<%=@project.id%>/decline/<%=waitlister.id%>" data-method = "patch">Decline</a>
-                                                </div>
-                                            </div>
-                                        <%end%>
-                                    <%else%>
-                                        <p>There are no users on the waitlist.</p>    
-                                    <%end%>
-                                </div>
-                            <%end%>
-                        </div>         
-                    </div>        
+                        </div>
+                    </div>
                 </div>
-            <% else %>
+                <%else%>
+                <%end%>
+                </div>
+            </div>
+                <% else %>
                 <h1>No such project exists</h1>
                 <% if !current_user %>
-                    <a href = "/projects/all"><h3>Return to Explore</a></h3>
+                <a href="/projects/all">
+                    <h3>←Return to Explore
+                </a></h3>
                 <% else %>
-                    <a href = "/dashboard"><h3>Return to Dashboard</a></h3>
+                <a href="/dashboard">
+                    <h3>←Return to Dashboard
+                </a></h3>
                 <% end %>
-            <% end %>
+                <% end %>
+            </div>
         </div>
     </div>
 </div>
-<!-- </div> -->

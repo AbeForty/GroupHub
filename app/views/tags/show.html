@@ -1,0 +1,19 @@
+<div class = "main">
+    <div class = "container">
+        <div class = "row">
+            <div class = "col col-lg-12">
+                <br>
+                <a href = "/projects/<%=@project.id%>/tags">🡨 Return to <%=@project.title%> Tags</a>
+                
+                <br>
+                <% if @tag != nil %>
+                    <h1><%=@tag.title%></h1>
+                    <span><a href="/projects/<%=@project.id%>/tags/<%=@tag.id%>/edit">Edit</a></span>
+                    <br>
+                <%else%>
+                    <p>This tag doesn't exist.</p>
+                <%end%>
+            </div>
+        </div>
+    </div>
+</div>

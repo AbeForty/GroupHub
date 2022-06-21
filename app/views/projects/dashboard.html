@@ -1,59 +1,84 @@
-<div class = "container">
-    <div class = "row">
-        <div class = "col col-lg-12">
-            <h1>Your Dashboard</h1>
-            <h2>Unfinished Tasks</h2>
-                <% if @tasks.length > 0%>
-                    <% @tasks.each do |task|%>
-                        <span class="card" style="width: 20rem;">
+<div class = "main">
+    <div class = "container">
+        <div class = "row">
+            <div class = "col col-lg-12">
+                <h1>Your Dashboard</h1>            
+                <h2>Unfinished Tasks</h2>
+                <div id="unfinishedTasksArea" class="dashboardArea">
+                <br>
+                    <% if @tasks.length > 0%>
+                        <% @tasks.each do |task|%>
+                        <!-- <a href="/projects/<%=task.project.id%>/tasks/<%=task.id%>" class="blockLink"> -->
+                            <span class="card dashboardCard" onclick="window.location.href = '/projects/<%=task.project.id%>/tasks/<%=task.id%>';"> 
+                                <div class="card-body">
+                                        <div class="statusFlag" style="background-color:<%=StatusType.find(task.status).color%>;"><a href="/search/status:<%=StatusType.find(task.status).title%>"><%=StatusType.find(task.status).title%></a></div>
+                                        <a href="/projects/<%=task.project.id%>/tasks/<%=task.id%>" class="card-link"><h4 class="card-title blueTitle" title="<%=task.title%>"><%=task.title%></h4></a>
+                                        <a href="/users/<%=task.user.id%>"><h6 class="card-subtitle mb-2 text-muted" onclick="event.stopPropagation()"><%=task.user.name%></h6></a>
+                                        <p class="card-text" title="<%=task.description%>"><%=task.description%></p>
+                                        <%if task.duedate != nil%>
+                                            <h6 class="card-subtitle mb-2 text-muted">Due Date: <%=task.duedate.strftime("%b %d, %Y")%></h6> 
+                                        <%else%>
+                                            <h6 class="card-subtitle mb-2 text-muted">Due Date: None</h6> 
+                                        <%end%>  
+                                        <h6 onclick="event.stopPropagation()">Project: <a href="/projects/<%=task.project_id%>" class="blueLink"><%=Project.find(task.project_id).title%></a></h6>
+                                </div>
+                            </span>
+                        <!-- </a> -->
+                        <%end%>
+                    <%else%>
+                        <p>You are a warrior. You have no unfinished tasks.</p>
+                    <%end%>
+                <!-- <br> -->
+            </div>
+                <hr>
+                <div id="yourProjectsArea" class="dashboardArea">
+                <h2>Your Projects</h2>
+                <a href = "/projects/new">New Project</a>
+                <br>
+                <br>
+                <% if @projects.length > 0 %>
+                    <% @projects.each do |project|%>
+                        <div class="card projectCard" onclick="window.location.href = '/projects/<%=project.id%>';">
                             <div class="card-body">
-                                <a href="/projects/<%=task.project.id%>/tasks/<%=task.id%>" class="card-link"><h3 class="card-title blueTitle"><%=task.title%></h3></a>
-                                <a href="/users/<%=task.user.id%>"><h6 class="card-subtitle mb-2 text-muted"><%=task.user.name%></h6></a>
-                                <p class="card-text"><%=task.description%></p>
-                                <h6 class="card-subtitle mb-2 text-muted"><%=task.duedate.strftime("%b %d, %Y")%></h6>                
+                                <a href="/projects/<%=project.id%>" class="card-link"><h4 class="card-title blueTitle"><%=project.title%></h4></a>
+                                <a href="/users/<%=project.user.id%>"onclick="event.stopPropagation()"><h6 class="card-subtitle mb-2 text-muted"><%=project.user.name%></h6></a>
+                                <p class="card-text"><%=project.description%></p>
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    <%if project.duedate != nil %>
+                                        <%=project.duedate.strftime("%b %d, %Y")%>
+                                    <%else%>
+                                        None
+                                    <%end%>
+                                </h6>                
                             </div>
-                        </span>
+                        </div>
+                    <% end %>
+                <%else%>
+                    <p>You haven't created any projects yet. Create your first project now.</p>
+                <% end %>
+                    </div>
+                <hr>
+                <div id="collabProjectsArea" class="dashboardArea">
+                <h2>Projects that you are a collaborator on</h2>
+                <br>
+                <% if @numOfCollabProjects > 0 %>
+                    <% @otherprojects.each do |project|%>
+                        <% if Member.where(user: current_user, project: project).length > 0 %>
+                            <div class="card projectCard" onclick="window.location.href = '/projects/<%=project.id%>';"">
+                                <div class="card-body">
+                                    <a href="/projects/<%=project.id%>" class="card-link"><h4 class="card-title blueTitle" style = "color:dodgerblue"><%=project.title%></h4></a>
+                                    <a href="/users/<%=project.user.id%>"onclick="event.stopPropagation()"><h6 class="card-subtitle mb-2 text-muted"><%=project.user.name%></h6></a>
+                                    <p class="card-text"><%=project.description%></p>
+                                    <h6 class="card-subtitle mb-2 text-muted"><%=project.created_at.strftime("%b %d, %Y")%></h6>                
+                                </div>
+                            </div>
+                        <%end%>
                     <%end%>
                 <%else%>
-                    <p>You are a warrior. You have no unfinished tasks.</p>
-                <%end%>
-            <!-- <br> -->
-            <hr>
-            <h2>Your Projects</h2>
-            <a href = "/projects/new">New Project</a>
-            <br>
-            <% if @projects.length > 0 %>
-                <% @projects.each do |project|%>
-                    <span class="card" style="width: 20rem;">
-                        <div class="card-body">
-                            <a href="/projects/<%=project.id%>" class="card-link"><h3 class="card-title" style = "color:dodgerblue"><%=project.title%></h3></a>
-                            <a href="/users/<%=project.user.id%>"><h6 class="card-subtitle mb-2 text-muted"><%=project.user.name%></h6></a>
-                            <p class="card-text"><%=project.description%></p>
-                            <h6 class="card-subtitle mb-2 text-muted"><%=project.created_at.strftime("%b %d, %Y")%></h6>                
-                        </div>
-                    </span>
+                    <p>You are not a collaborator on any project yet. Join a project now.</p>
                 <% end %>
-            <%else%>
-                <p>You haven't created any projects yet. Create your first project now.</p>
-            <% end %>
-            <hr>
-            <h2>Projects that you are a collaborator on</h2>
-            <% if @numOfCollabProjects > 0 %>
-                <% @otherprojects.each do |project|%>
-                    <% if Member.where(user: current_user, project: project).length > 0 %>
-                        <span class="card" style="width: 20rem;">
-                            <div class="card-body">
-                                <a href="/projects/<%=project.id%>" class="card-link"><h3 class="card-title" style = "color:dodgerblue"><%=project.title%></h3></a>
-                                <a href="/users/<%=project.user.id%>"><h6 class="card-subtitle mb-2 text-muted"><%=project.user.name%></h6></a>
-                                <p class="card-text"><%=project.description%></p>
-                                <h6 class="card-subtitle mb-2 text-muted"><%=project.created_at.strftime("%b %d, %Y")%></h6>                
-                            </div>
-                        </span>
-                    <%end%>
-                <%end%>
-            <%else%>
-                <p>You are not a collaborator on any project yet. Join a project now.</p>
-            <% end %>
+                </div>
+            </div>
         </div>
     </div>
 </div>

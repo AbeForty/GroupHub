@@ -1,0 +1,22 @@
+<div class = "main">
+    <div class = "container">
+        <div class = "row">
+            <div class = "col col-lg-12">
+                <div class = "" id ="" onclick="event.stopPropagation()"> 
+                    <h2 style="text-align:center;">Select the type of Group<span class="hubLogo">Hub</span> account you want to create:</h2>
+                    <br>
+                    <div id="userTypeButtonSelect" style="margin-left:auto; margin-right:auto; width:52%">
+                        <h3 style="text-align:center;">JOIN AN EXISTING ORGANIZATION</h3>
+                        <h4><strong>Organization Code</strong></h4>
+                        PLEASE ENTER THE ORGANIZATION CODE PROVIDED BY YOUR ORGANIZATION.
+                        <form action = "/organizations/<%=@organization.id%>/generatecode" method = "POST">
+                            <input class = 'form-control' type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
+                            <input type="text" placeholder="Organization Code">
+                            <button class = "btn btn-primary">JOIN</button>
+                        </form>
+                    </div>
+                </div>
+            </div>           
+        </div>
+    </div>
+</div>

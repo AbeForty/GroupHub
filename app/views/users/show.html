@@ -1,65 +1,184 @@
-<div class = "container">
-    <div class = "row">
-        <div class = "col col-lg-12">
-            <% if !current_user %>
-                <div class="alert alert-warning">
-                    Create an account or log in to get the full functionality of GroupHub.
-                </div>
-            <%end%>
-            <h1 style="display: inline-block;"><%=@user.name%></h1>
-            <% if @user == current_user %>
-                <a href = "/users/<%=@user.id%>/edit">Edit</a>
-            <%end%>
-            <h5><%=@user.email%></h5>
-            <% if @user != current_user %>
-                <h3>Their Projects</h3>
-            <%else%>
-                <h3>Your Projects</h3>
-            <%end%>
-            <% if @user.projects.length > 0 %>
-                <% @user.projects.each do |project|%>
-                    <span class="card" style="width: 20rem; display: inline-block; vertical-align: top;">
-                        <div class="card-body">
-                            <a href="/projects/<%=project.id%>" class="card-link"><h3 class="card-title blueTitle"><%=project.title%></h3></a>
-                            <a href="/users/<%=project.user.id%>"><h6 class="card-subtitle mb-2 text-muted"><%=project.user.name%></h6></a>
-                            <p class="card-text"><%=project.description%></p>
-                            <h6 class="card-subtitle mb-2 text-muted"><%=project.created_at.strftime("%b %d, %Y")%></h6>                
-                        </div>
-                    </span>
-                <% end %>
-            <%else%>
-                <% if @user != current_user %>
-                    <p>They haven't created any projects yet.</p>
-                <%else%>
-                    <p>You haven't created any projects yet.</p>
+<div class = "main">
+    <div class = "container">
+        <div class = "row">
+            <div class = "col col-lg-12">
+                <% if !current_user %>
+                    <br>
+                    <div class="alert alert-warning">
+                        Create an account or log in to create your own projects on GroupHub.
+                    </div>
                 <%end%>
-            <% end %>
-            <hr>
-            <% if @user != current_user %>
-                <h3>Projects that they are a collaborator on</h3>
-            <%else%>
-                <h3>Projects that you are a collaborator on</h3>
-            <%end%>
-            <% if @numOfCollabProjects > 0 %>
-                <% @otherprojects.each do |project|%>
-                    <% if Member.where(user: @user, project: project).length > 0 %>
-                        <span class="card" style="width: 20rem; display:inline-block; vertical-align: top;">
+                <div id="yourProjectsArea" class="dashboardArea">
+                <h1 style="display: inline-block;"><%=@user.name%></h1>
+                <% if @user == current_user %>
+                    <a href = "/users/<%=@user.id%>/edit">Edit</a>
+                <%end%>
+                <% if @hideEmailStatus == nil || @hideEmailStatus == 1 || @user == current_user  %>
+                    <h5><%=@user.email%></h5>
+                <%end%>
+                <% if @user != current_user %>
+                    <h3>Their Projects</h3>
+                    <p>These are all of the projects that are visible to you. They may have created additional projects that aren't visible to you. Please contact the user for access.</p>
+                <%else%>
+                    <h3>Your Projects</h3>
+                <%end%>
+                <% if @userProjects.length > 0 %>
+                    <% @userProjects.each do |project|%>
+                        <span class="card projectCard" onclick="window.location.href = '/projects/<%=project.id%>';">
                             <div class="card-body">
-                                <a href="/projects/<%=project.id%>" class="card-link"><h3 class="card-title blueTitle"><%=project.title%></h3></a>
-                                <a href="/users/<%=project.user.id%>"><h6 class="card-subtitle mb-2 text-muted"><%=project.user.name%></h6></a>
+                                <a href="/projects/<%=project.id%>" class="card-link"><h4 class="card-title blueTitle"><%=project.title%></h4></a>
+                                <a href="/users/<%=project.user.id%>" onclick="event.stopPropagation()"><h6 class="card-subtitle mb-2 text-muted"><%=project.user.name%></h6></a>
                                 <p class="card-text"><%=project.description%></p>
                                 <h6 class="card-subtitle mb-2 text-muted"><%=project.created_at.strftime("%b %d, %Y")%></h6>                
                             </div>
                         </span>
-                    <%end%>
-                <%end%>
-            <%else%>
-                <% if @user != current_user %>
-                    <p>They are not a collaborator on any project yet.</p>
+                    <% end %>
                 <%else%>
-                    <p>You are not a collaborator on any project yet.</p>
-                <%end%>    
-            <% end %>
+                    <% if @user != current_user %>
+                        <p>They haven't created any <i>public</i> projects yet. They may have created projects that aren't visible to you. Please contact the user for access.</p>
+                    <%else%>
+                        <p>You haven't created any projects yet.</p>
+                    <%end%>
+                <% end %>
+            </div>
+            <hr>
+                <div id="collabProjectsArea" class="dashboardArea">
+                <% if @user != current_user %>
+                    <h3>Projects that they are a collaborator on</h3>
+                <%else%>
+                    <h3>Projects that you are a collaborator on</h3>
+                <%end%>
+                <% if @numOfCollabProjects > 0 %>
+                    <% @otherprojects.each do |project|%>
+                        <% if Member.where(user: @user, project: project).length > 0 %>
+                            <span class="card projectCard" onclick="window.location.href = '/projects/<%=project.id%>';">
+                                <div class="card-body">
+                                    <a href="/projects/<%=project.id%>" class="card-link"><h4 class="card-title blueTitle"><%=project.title%></h4></a>
+                                    <a href="/users/<%=project.user.id%>"><h6 class="card-subtitle mb-2 text-muted"><%=project.user.name%></h6></a>
+                                    <p class="card-text"><%=project.description%></p>
+                                    <h6 class="card-subtitle mb-2 text-muted"><%=project.created_at.strftime("%b %d, %Y")%></h6>                
+                                </div>
+                            </span>
+                        <%end%>
+                    <%end%>
+                <%else%>
+                    <% if @user != current_user %>
+                        <p>They are not a collaborator on any project yet that is visible to you. They may be a collaborator on a project that is not visible to you.</p>
+                    <%else%>
+                        <p>You are not a collaborator on any project yet.</p>
+                    <%end%>    
+                <% end %>
+                </div>
+                <hr>
+                <div>
+                    <h3>Unfinished Tasks</h3>
+                    <div id="unfinished-task-list">
+                        <br>
+                    <% if @userTasks.length > 0%>
+                        <% @userTasks.each do |task|%>
+                            <% if task.status != 6%>
+                                <span class="card unfinishedTaskCard" onclick="window.location.href = '/projects/<%=task.project_id%>/tasks/<%=task.id%>'">
+                                    <div class="card-body">
+                                        <div class="statusFlag" style="background-color:<%=StatusType.find(task.status).color%>;"><a href="/search/status:<%=StatusType.find(task.status).title%>"><%=StatusType.find(task.status).title%></a></div>
+                                        <a href="/projects/<%=task.project_id%>/tasks/<%=task.id%>" class="card-link">
+                                            <h3 class="card-title blueTitle" title="<%=task.title%>"><%=task.title%></h3>
+                                        </a>
+                                        <a href="/users/<%=task.user.id%>">
+                                            <h6 class="card-subtitle mb-2 text-muted"><%=task.user.name%></h6>
+                                        </a>
+                                        <p class="card-text twoLineText" title="<%=task.description%>"><%=task.description%></p>
+                                        <%if task.user == current_user %>
+                                        <form action="/projects/<%=task.project_id%>/tasks/<%=task.id%>/status"
+                                            method="POST">
+                                            <input type="hidden" name="authenticity_token"
+                                                value="<%= form_authenticity_token%>">
+                                            <input type="hidden" name="_method" value="patch">
+                                            <select name = "status" id = "status">
+                                                <% if @status != nil %>
+                                                    <%@status.each do |status|%>
+                                                        <% if task.status == status.id%>
+                                                            <option value = "<%=status.id%>" selected = "selected"><%=status.title%></option>
+                                                        <% else %>
+                                                            <option value = "<%=status.id%>"><%=status.title%></option>
+                                                        <%end%>
+                                                    <%end%>  
+                                                <%end%>
+                                                <% if @statusAll != nil %>
+                                                    <%@statusAll.each do |status|%>
+                                                        <% if task.status == status.id%>
+                                                            <option value = "<%=status.id%>" selected = "selected"><%=status.title%></option>
+                                                        <% else %>
+                                                            <option value = "<%=status.id%>"><%=status.title%></option>
+                                                        <%end%>
+                                                    <%end%>
+                                                <%end%>            
+                                            </select>
+                                            <br>
+                                            <br>
+                                            <button class="btn btn-primary">Update Status</button>
+                                        </form>
+                                        <%else%>
+                                        <select name = "status" id = "status" disabled="disabled">
+                                            <% if @status != nil %>
+                                                <%@status.each do |status|%>
+                                                    <% if task.status == status.id%>
+                                                        <option value = "<%=status.id%>" selected = "selected"><%=status.title%></option>
+                                                    <% else %>
+                                                        <option value = "<%=status.id%>"><%=status.title%></option>
+                                                    <%end%>
+                                                <%end%>  
+                                            <%end%>
+                                            <% if @statusAll != nil %>
+                                                <%@statusAll.each do |status|%>
+                                                    <% if task.status == status.id%>
+                                                        <option value = "<%=status.id%>" selected = "selected"><%=status.title%></option>
+                                                    <% else %>
+                                                        <option value = "<%=status.id%>"><%=status.title%></option>
+                                                    <%end%>
+                                                <%end%>
+                                            <%end%>    
+                                        </select>
+                                        <%end%>
+                                        <!-- <script>
+                                                                    $('#status').val()
+                                                                </script> -->
+                                            <%if task.duedate != nil%>
+                                                <h6 class="card-subtitle mb-2 text-muted">Due Date: <%=task.duedate.strftime("%b %d, %Y")%></h6> 
+                                            <%else%>
+                                                <h6 class="card-subtitle mb-2 text-muted">Due Date: None</h6> 
+                                            <%end%>
+                                            <%if PriorityType.find_by(id: task.PriorityType_id) != nil%>
+                                                <h6 class="card-subtitle mb-2 text-muted">Priority: <%=PriorityType.find_by(id: task.PriorityType_id).title%></h6>
+                                            <%else%>
+                                                <h6 class="card-subtitle mb-2 text-muted">Priority: None</h6>
+                                            <%end%>
+                                            Tags:
+                                            <% if TagTask.where(task_id:task.id).length != 0%>
+                                                <%TagTask.where(task_id:task.id).each do |tag|%>
+                                                    <%if tag == TagTask.where(task_id:task.id).last%>
+                                                        <span><a href="/search/tag:<%=Tag.find(tag.tag_id).title%>"><%=Tag.find(tag.tag_id).title%></a></span>
+                                                    <%else%>
+                                                        <span><a href="/search/tag:<%=Tag.find(tag.tag_id).title%>"><%=Tag.find(tag.tag_id).title%>,</a></span>
+                                                    <%end%>
+                                                <%end%>
+                                            <%else%>
+                                                None
+                                            <%end%>
+                                            <% if task.milestone.try(&:title)%>
+                                                <p>Milestone: <a href ="/projects/<%=task.project_id%>/milestones/<%=task.milestone.id%>"><%=task.milestone.try(&:title)%></a></p>
+                                            <%else%>
+                                                <span>Milestone: None</span>
+                                            <%end%>
+                                    </div>
+                                </span>
+                            <%end%>
+                        <%end%>
+                    <%else%>
+                        <p>There are no unfinished tasks for this user that are viewable by you.</p>
+                    <%end%>
+                </div>
         </div>
     </div>
+</div>
+</div>
 </div>

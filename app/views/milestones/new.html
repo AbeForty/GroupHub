@@ -1,0 +1,29 @@
+<div class = "main">
+    <div class = "container">
+        <div class = "row">
+            <div class = "col col-lg-12">
+                <br>
+                <a href="/projects/<%=@project.id%>/milestones">🡨 Return to <%=@project.title%> Milestones</a>
+                <h1>Create a milestone for <%=@project.title%></h1>
+                <form action = "/projects/<%=@project.id%>/milestones" method = "POST">
+                    <input class = 'form-control'type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
+                    <span>Milestone Name</span>
+                    <input class = 'form-control' type = "text" name = "title" placeholder = "Name your milestone">
+                    <br>
+                    <br>
+                    <span style = "vertical-align: top;">Milestone Description</span>
+                    <textarea class = 'form-control' name = "description" placeholder="Describe your milestone"></textarea>
+                    <br>
+                    <br>               
+                    <span>Due Date:</span>
+                    <input class = 'form-control'type = "date" name = "duedate">
+                    <br>
+                    <br>               
+                    <button class = "btn btn-primary">Create Milestone</button>
+                    <br>
+                    <br>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

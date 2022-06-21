@@ -1,0 +1,29 @@
+<div class = "main">
+    <div class = "container">
+        <div class = "row">
+            <div class = "col col-lg-12">
+                <br>
+                <a href = "/projects/<%=@project.id%>/edit">🡨 Return to <%=@project.title%> Edit page</a>
+                <h1>Status options for <%=@project.title%></h1>
+                <a href = "/projects/<%=@project.id%>/status/new">New Status Option</a>
+                <br>
+                <% if @status != nil %>
+                    <% if @status.length > 0 %>
+                        <% @status.each do |status|%>
+                            <a href ="/projects/<%=@project.id%>/status/<%=status.id%>">
+                                <div>
+                                    <h4><%=status.title%></h4> 
+                                    <div class="statusFlag" style="background-color: <%=status.color%>;"></div>
+                                </div>
+                            </a>
+                        <%end%>
+                    <%else%>
+                        <p>No status options for this project exist yet. Create a status option now.</p>
+                    <%end%>
+                <%else%>
+                    <p>No status options for this project exist yet. Create a status option now.</p>
+                <%end%>
+            </div>
+        </div>
+    </div>
+</div>

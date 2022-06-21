@@ -1,55 +1,99 @@
-<div class="container">
-  <div class="row">
-    <div class="col col-lg-12">
-      <div class="col col-lg-6">
-        <h2 style="display:inline-block;">Register</h2>
-        <% if flash[:errors] %>
-          <div class="alert alert-danger">
-            <% flash[:errors].each do |note| %>
-              <p id="notice">
-                <%= note %>
-              </p>
-              <% end %>
-          </div>
-          <% end %>
-            <form action="/users" method="POST">
-              <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token%>">
-              <span>Name</span>
-              <input type="text" name="name" id="name" class='form-control'>
-              <br>
-              <br>
-              <span>Email</span>
-              <input type="text" name="email" id="email" class='form-control'>
-              <br>
-              <span>Password</span>
-              <input type="password" name="password" id="password" class='form-control'>
-              <br>
-              <span>Password Confirmation</span>
-              <input type="password" name="password_Confirmation" id="password_Confirmation" class='form-control'>
-              <br>
-              <input type="submit" name="join" id="join" value="Register" class="btn btn-primary">
-            </form>
-      </div>
-      <div class="col col-lg-6">
-        <h2 style="display:inline-block;">Login</h2>
+<div class="col col-lg-6 overlay" id ="registerOverlay" onclick="closeRegisterOverlay()">
+<div class = "overlayInner" id ="registerOverlayInner" onclick="event.stopPropagation()"> 
+  <h2 style="text-align:center;">Sign up for Group<span class="hubLogo">Hub</span> account</h2>
+  <% if flash[:errors] %>
+    <div class="alert alert-danger">
+      <% flash[:errors].each do |note| %>
+        <p id="notice">
+          <%= note %>
+        </p>
+        <% end %>
+    </div>
+    <% end %>
+      <form action="/users" method="POST">
+        <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token%>">
+        <span>Name</span>
+        <input type="text" name="name" id="name" class='form-control'>
+        <br>
+        <span>Email</span>
+        <input type="text" name="email" id="email" class='form-control'>
+        <br>
+        <span>Password</span>
+        <input type="password" name="password" id="password" class='form-control'>
+        <br>
+        <span>Password Confirmation</span>
+        <input type="password" name="password_Confirmation" id="password_Confirmation" class='form-control'>
+        <br>
+        <input type="submit" name="join" id="join" value="Sign Up" class="btn btn-primary">
+      </form>
+      <br>
+      <p id="haveAccountLink" class="clickTextHover"onclick="closeRegisterOverlay(); openLoginOverlay();">Already have an account? Click here to login.</p>
+  </div>
+  <img class = "closeOverlay" src="<%=image_path("BlackX.svg")%>" onclick="closeRegisterOverlay()"/>
+  <!--end of sign up form-->
+</div>
+
+<div class="col col-md-6 overlay" id="loginOverlay" onclick="closeLoginOverlay()">
+  <div class = "overlayInner" id ="loginOverlayInner" onclick="event.stopPropagation()"> 
+    <h2 style="text-align:center;">Group<span class="hubLogo">Hub</span> Login</h2>
         <% if flash[:messages] %>
           <% flash[:messages].each do |note| %>
-            <p id="notice">
+            <p id="notice" class="alert alert-success">
               <%= note %>
             </p>
             <% end %>
         <% end %>
-                <form action="/sessions" method="POST">
-                  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token%>">
-                  <span>Email</span>
-                  <input type="text" name="Email" id="Email" class='form-control'>
-                  <br>
-                  <span>Password</span>
-                  <input type="password" name="Password" id="Password" class='form-control'>
-                  <br>
-                  <input type="submit" value="Log In" class="btn btn-primary">
-                </form>
-      </div>
+        <form action="/sessions" method="POST">
+          <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token%>">
+          <span>Email</span>
+          <input type="text" name="Email" id="Email" class='form-control'>
+          <br>
+          <span>Password</span>
+          <input type="password" name="Password" id="Password" class='form-control'>
+          <br>
+          <input type="submit" value="Log In" id="login" class="btn btn-primary">
+        </form>
+        <br>
+        <p id="noAccountLink" class="clickTextHover"onclick="closeLoginOverlay(); openRegisterOverlay();">Don't have an account? Sign up now.</p>
+    </div>
+    <img class = "closeOverlay" src="<%=image_path("BlackX.svg")%>"onclick="closeLoginOverlay()"//>
+</div>
+<div class = "main">
+  <div class="container">
+    <div class="row">
+      <div class="col col-lg-12">      
+        <script>
+          function openRegisterOverlay() {
+            document.getElementById("registerOverlay").style.display = "block";
+          }
+          
+          function closeRegisterOverlay() {
+            document.getElementById("registerOverlay").style.display = "none";
+          }
+          </script>
+          <script>
+            function openLoginOverlay() {
+              document.getElementById("loginOverlay").style.display = "block";
+            }
+            
+            function closeLoginOverlay() {
+              document.getElementById("loginOverlay").style.display = "none";
+            }
+            </script>
+            <div id="sloganArea">
+              <div id="logoText"><span class="groupLogo">Group</span><span class="hubLogo">Hub</span></div>
+              <p id="sloganText"><span class="groupLogo">collaborate smarter.</span></p>
+            </div>
+            <br>
+            <img id = "loginAnimation" src="<%=image_path("GroupHubTaskSlideAnimation.gif")%>"/>
+            <br>
+            <br>
+            <p id="welcomeText"><span class="groupLogo">Welcome to Group<span class="hubLogo">Hub</span>, a new way to collaborate smarter.<br> Sign up today to get access to smarter collaboration tools today.             </span></p>
+            <div id="registerLoginDock">
+              <button class="btn btn-primary" id ="signUpButton" onclick="openRegisterOverlay()">Sign Up</button>
+              <button class="btn btn-primary" id ="loginButton" onclick="openLoginOverlay()">Login</button>
+            </div>
+        </div>
     </div>
   </div>
 </div>

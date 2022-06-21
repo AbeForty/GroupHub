@@ -1,49 +1,292 @@
-<div class = "container">
-    <div class = "row">
-        <div class = "col col-lg-12">
-            <% if !current_user %>
-                <div class="alert alert-warning">
-                    Create an account or log in to get the full functionality of GroupHub™.
-                </div>
-            <%end%>
-            <% if @type == "project" %>
-                <% if @search.length > 1 || @search.length == 0 %> 
-                    <h1><%=@search.length.to_s%> projects match '<%=@query%>'</h1>
-                <%elsif @search.length == 1%>
-                    <h1><%=@search.length.to_s%> project matches '<%=@query%>'</h1>
+<div class = "main">
+    <div class = "container">
+        <div class = "row">
+            <div class = "col col-lg-12">
+                <% if !current_user %>
+                    <div class="alert alert-warning">
+                        Create an account or log in to create your own projects on GroupHub..
+                    </div>
                 <%end%>
-                <% if @search.length > 0 %>
-                    <% @search.each do |project|%>
-                        <span class="card" style="width: 18rem;">
-                            <div class="card-body">
-                                <a href="/projects/<%=project.id%>" class="card-link"><h3 class="card-title" style = "color:dodgerblue"><%=project.title%></h3></a>
-                                <a href ="/users/<%=project.user.id%>"><h6 class="card-subtitle mb-2 text-muted"><%=project.user.name%></h6></a>
-                                <p class="card-text"><%=project.description%></p>
-                                <h6 class="card-subtitle mb-2 text-muted"><%=project.created_at%></h6>                
-                            </div>
-                        </span>
+                <% if @type == "project" %>
+                    <% if @search != nil%>
+                        <% if @search.length > 1 || @search.length == 0 %> 
+                            <h1><%=@search.length.to_s%> projects match '<%=@query%>'</h1>
+                        <%elsif @search.length == 1%>
+                            <h1><%=@search.length.to_s%> project matches '<%=@query%>'</h1>
+                        <%end%>
+                        <% if @search.length > 0 %>
+                            <% @search.each do |project|%>
+                                <span class="card projectCard" onclick="window.location.href ='/projects/<%=project.id%>'">
+                                    <div class="card-body">
+                                        <a href="/projects/<%=project.id%>" class="card-link"><h3 class="card-title" style = "color:dodgerblue"><%=project.title%></h3></a>
+                                        <a href ="/users/<%=project.user.id%>"><h6 class="card-subtitle mb-2 text-muted"><%=project.user.name%></h6></a>
+                                        <p class="card-text"><%=project.description%></p>
+                                        <h6 class="card-subtitle mb-2 text-muted">
+                                            <%if project.duedate != nil %>
+                                                <%=project.duedate.strftime("%b %d, %Y")%>
+                                            <%else%>
+                                                None
+                                            <%end%>
+                                        </h6>  
+                                        <% if current_user %>
+                                        <% if !project.users.include?(current_user) && !project.waitlisters.include?(User.find(current_user)) && project.user != current_user %>
+                                            <a href="/projects/<%=project.id%>/join/<%=current_user.id%>" data-method="patch">Join</a>
+                                        <% elsif project.waitlisters.include?(User.find(current_user)) %>
+                                            <p>Waiting for Approval</p>
+                                        <%else%>
+                                        <% end %>
+                                    <% end %>              
+                                    </div>
+                                </span>
+                            <%end%>
+                        <%else%>
+                            <p>No projects match your search.</p>
+                        <%end%>    
+                        <%else%>
+                        <h1>0 projects match ' <%=@type%> <%=@query%>'</h1>
+                        <p>No projects match your search.</p>
                     <%end%>
-                <%else%>
-                    <p>No projects match your search.</p>
-                <%end%>
-            <% elsif @type == "user" %>
-                <% if @search.length > 1 || @search.length == 0 %> 
-                    <h1><%=@search.length.to_s%> users match '<%=@query%>'</h1>
-                <%elsif @search.length == 1%>
-                    <h1><%=@search.length.to_s%> user matches '<%=@query%>'</h1>
-                <%end%>
-                <% if @search.length > 0 %>
-                    <% @search.each do |user|%>
-                        <span class="card" style="width: 18rem;">
-                            <div class="card-body">
-                                <a href="/users/<%=user.id%>" class="card-link"><h3 class="card-title" style = "color:dodgerblue"><%=user.name%></h3></a>                                 
-                            </div>
-                        </span>
+                <% elsif @type == "user" %>
+                    <% if @search != nil%>
+                        <% if @search.length > 1 || @search.length == 0 %> 
+                            <h1><%=@search.length.to_s%> users match '<%=@query%>'</h1>
+                        <%elsif @search.length == 1%>
+                            <h1><%=@search.length.to_s%> user matches '<%=@query%>'</h1>
+                        <%end%>
+                        <% if @search.length > 0 %>
+                            <% @search.each do |user|%>
+                                <span class="card" style="width: 18rem;" onclick="window.location.href='/users/<%=user.id%>'">
+                                    <div class="card-body">                                        
+                                        <a href="/users/<%=user.id%>" class="card-link" <span>
+                                            <p class="profileCircle"><img class="profileIcon" src="<%=image_path("PersonIcon.svg")%>"></p>
+                                            <p class="collabUserText userSearchCard"><%=user.name%></p>
+                                        </span>  
+                                    </a>                                 
+                                    </div>
+                                </span>
+                            <%end%>
+                        <%else%>
+                            <p>No users match your search.</p>
+                        <%end%>
+                        <%else%>
+                        <h1>0 users match ' <%=@type%> <%=@query%>'</h1>
+                        <p>No users match your search.</p>
                     <%end%>
-                <%else%>
-                    <p>No users match your search.</p>
-                <%end%>
-            <% end %>
+                <% elsif @type == "milestonetasks" || @type == "status" || @type == "priority" || @type == "duedate" || @type == "datecreated" || @type == "dateupdated" || @type == "assignedto" || @type == "tag"%>
+                    <% if @search != nil%>
+                    <%if @type == "assignedto"%>
+                        <% if @search.length != 1 %> 
+                            <h1><%=@search.length.to_s%> tasks assigned to '<%=@query%>'</h1>
+                        <%elsif @search.length == 1%>
+                            <h1><%=@search.length.to_s%> task assigned to  '<%=@query%>'</h1>
+                        <%end%>
+                    <%elsif @type == "priority" || @type == "status"%>
+                        <% if @search.length != 1 %> 
+                            <h1><%=@search.length.to_s%> tasks with <%=@type%> '<%=@query%>'</h1>
+                        <%elsif @search.length == 1%>
+                            <h1><%=@search.length.to_s%> task with <%=@type%> '<%=@query%>'</h1>
+                        <%end%>
+                    <%elsif @type == "duedate"%>
+                        <% if @search.length != 1 %> 
+                            <h1><%=@search.length.to_s%> tasks due '<%=@query%>'</h1>
+                        <%elsif @search.length == 1%>
+                            <h1><%=@search.length.to_s%> task due '<%=@query%>'</h1>
+                        <%end%>
+                    <%elsif @type == "datecreated"%>
+                        <% if @search.length != 1 %> 
+                            <h1><%=@search.length.to_s%> tasks created on '<%=@query%>'</h1>
+                        <%elsif @search.length == 1%>
+                            <h1><%=@search.length.to_s%> task created on '<%=@query%>'</h1>
+                        <%end%>
+                    <%elsif @type == "dateupdated"%>
+                        <% if @search.length != 1 %> 
+                            <h1><%=@search.length.to_s%> tasks last updated on '<%=@query%>'</h1>
+                        <%elsif @search.length == 1%>
+                            <h1><%=@search.length.to_s%> task last updated on '<%=@query%>'</h1>
+                        <%end%>
+                    <%elsif @type == "tag"%>
+                        <% if @search.length != 1 %> 
+                            <h1><%=@search.length.to_s%> tasks tagged with '<%=@query%>'</h1>
+                        <%elsif @search.length == 1%>
+                            <h1><%=@search.length.to_s%> task tagged with on '<%=@query%>'</h1>
+                        <%end%>
+                    <%elsif @type != "milestonetasks"%>
+                        <% if @search.length != 1 %> 
+                            <h1><%=@search.length.to_s%> tasks match <%=@type%> '<%=@query%>'</h1>
+                        <%elsif @search.length == 1%>
+                            <h1><%=@search.length.to_s%> task matches <%=@type%> '<%=@query%>'</h1>
+                        <%end%>                    
+                    <%else%>
+                        <% if @search.length != 1 %> 
+                            <h1><%=@search.length.to_s%> tasks belong to milestone '<%=@query%>'</h1>
+                        <%elsif @search.length == 1%>
+                            <h1><%=@search.length.to_s%> task belong to milestone '<%=@query%>'</h1>
+                        <%end%>
+                    <%end%>
+                        <br>
+                        <% if @search.length > 0 %>
+                            <% @search.each do |task|%>
+                                <div class="card taskCard" onclick="window.location.href='/projects/<%=task.project_id%>/tasks/<%=task.id%>'">
+                                    <div class="card-body">
+                                        <div class="statusFlag" style="background-color:<%=StatusType.find(task.status).color%>;"><a href="/search/status:<%=StatusType.find(task.status).title%>"><%=StatusType.find(task.status).title%></a></div>
+                                        <a href="/projects/<%=task.project_id%>/tasks/<%=task.id%>" class="card-link"><h3 class="card-title blueTitle" style = "color:dodgerblue"><%=task.title%></h3></a>
+                                        <a href="/users/<%=task.user.id%>">
+                                            <h6 class="card-subtitle mb-2 text-muted"><%=task.user.name%></h6>
+                                        </a>
+                                        <p class="card-text"><%=task.description%></p>
+                                        <%if task.user == current_user %>
+                                        <form action = "/projects/<%=task.project_id%>/tasks/<%=task.id%>/status" method = "POST">
+                                            <input type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
+                                            <input type = "hidden" name = "_method" value = "patch">
+                                        
+                                            <%if task.duedate != nil%>
+                                                <h6 class="card-subtitle mb-2 text-muted">Due Date: <%=task.duedate.strftime("%b %d, %Y")%></h6> 
+                                            <%else%>
+                                                <h6 class="card-subtitle mb-2 text-muted">Due Date: None</h6> 
+                                            <%end%>  
+                                                <%if PriorityType.find_by(id: task.PriorityType_id) != nil%>       
+                                                    <h6 class="card-subtitle mb-2 text-muted">Priority: <%=PriorityType.find_by(id: task.PriorityType_id).title%></h6>
+                                                <%else%>
+                                                    <h6 class="card-subtitle mb-2 text-muted">Priority: None</h6>
+                                                <%end%>
+                                                <div class="tagList">
+                                                Tags:
+                                                <% if TagTask.where(task_id:task.id).length != 0%>
+                                                    <%TagTask.where(task_id:task.id).each do |tag|%>
+                                                        <%if tag == TagTask.where(task_id:task.id).last%>
+                                                            <span><a href="/search/tag:<%=Tag.find(tag.tag_id).title%>"><%=Tag.find(tag.tag_id).title%></a></span>
+                                                        <%else%>
+                                                            <span><a href="/search/tag:<%=Tag.find(tag.tag_id).title%>"><%=Tag.find(tag.tag_id).title%>,</a></span>
+                                                        <%end%>
+                                                    <%end%>
+                                                <%else%>
+                                                    None
+                                                <%end%>
+                                                </div>
+                                                <h6>Project: <a href="/projects/<%=task.project_id%>"><%=Project.find(task.project_id).title%></a></h6>
+                                                <% if task.milestone.try(&:title)%>
+                                                <h6 class="milestoneText">Milestone: <%=task.milestone.try(&:title)%></h6>
+                                                <%else%>
+                                                <h6 class="milestoneText">Milestone: None</h6>
+                                                <%end%>
+                                                <select name = "status" id = "status">
+                                                    <% if StatusType.where(project_id:task.project_id) != nil %>
+                                                        <% StatusType.where(project_id:task.project_id).each do |status|%>
+                                                            <% if task.status == status.id%>
+                                                                <option value = "<%=status.id%>" selected = "selected"><%=status.title%></option>
+                                                            <% else %>
+                                                                <option value = "<%=status.id%>"><%=status.title%></option>
+                                                            <%end%>
+                                                        <%end%>  
+                                                    <%end%>
+                                                    <% if StatusType.where(project_id:nil) != nil %>
+                                                        <%StatusType.where(project_id:nil).each do |status|%>
+                                                            <% if task.status == status.id%>
+                                                                <option value = "<%=status.id%>" selected = "selected"><%=status.title%></option>
+                                                            <% else %>
+                                                                <option value = "<%=status.id%>"><%=status.title%></option>
+                                                            <%end%>
+                                                        <%end%>
+                                                    <%end%>              
+                                                </select>
+                                                <br>
+                                                <br>
+                                                <button class = "btn btn-primary">Update Status</button>
+                                            </form>
+                                            <br>
+                                            <br>
+                                            <%else%>
+                                        
+                                            <%if task.duedate != nil%>
+                                            <h6 class="card-subtitle mb-2 text-muted">Due Date: <%=task.duedate.strftime("%b %d, %Y")%></h6> 
+                                        <%else%>
+                                            <h6 class="card-subtitle mb-2 text-muted">Due Date: None</h6> 
+                                        <%end%>
+                                        <%if PriorityType.find_by(id: task.PriorityType_id) != nil%>
+                                            <h6 class="card-subtitle mb-2 text-muted">Priority: <%=PriorityType.find_by(id: task.PriorityType_id).title%></h6>     
+                                        <%else%>                          
+                                            <h6 class="card-subtitle mb-2 text-muted">Priority: None</h6>     
+                                        <%end%>
+                                        Tags:
+                                        <% if TagTask.where(task_id:task.id).length != 0%>
+                                            <%TagTask.where(task_id:task.id).each do |tag|%>
+                                                <%if tag == TagTask.where(task_id:task.id).last%>
+                                                    <span><a href="/search/tag:<%=Tag.find(tag.tag_id).title%>"><%=Tag.find(tag.tag_id).title%></a></span>
+                                                <%else%>
+                                                    <span><a href="/search/tag:<%=Tag.find(tag.tag_id).title%>"><%=Tag.find(tag.tag_id).title%>,</a></span>
+                                                <%end%>
+                                            <%end%>
+                                        <%else%>
+                                            None
+                                        <%end%>
+                                        <br>               
+                                                <% if task.milestone.try(&:title)%>
+                                                <p class="milestoneText">Milestone: <%=task.milestone.try(&:title)%></p>
+                                                <%else%>
+                                                <span class="milestoneText">Milestone: None</span>
+                                            <%end%> 
+                                            <select name = "status" id = "status" disabled="disabled">
+                                                <% if StatusType.where(project_id:task.project_id) != nil %>
+                                                    <% StatusType.where(project_id:task.project_id).each do |status|%>
+                                                        <% if task.status == status.id%>
+                                                            <option value = "<%=status.id%>" selected = "selected"><%=status.title%></option>
+                                                        <% else %>
+                                                            <option value = "<%=status.id%>"><%=status.title%></option>
+                                                        <%end%>
+                                                    <%end%>  
+                                                <%end%>
+                                                <% if StatusType.where(project_id:nil) != nil %>
+                                                    <% StatusType.where(project_id:nil).each do |status|%>
+                                                        <% if task.status == status.id%>
+                                                            <option value = "<%=status.id%>" selected = "selected"><%=status.title%></option>
+                                                        <% else %>
+                                                            <option value = "<%=status.id%>"><%=status.title%></option>
+                                                        <%end%>
+                                                    <%end%>           
+                                                <%end%>
+                                            </select>                  
+                                        <%end%>
+                                </div>
+                            </div>
+                            <%end%>
+                        <%else%>
+                            <p>No tasks match your search.</p>
+                        <%end%>
+                    <%else%>
+                        <h1>0 tasks match ' <%=@type%> <%=@query%>'</h1>
+                        <p>No tasks match your search.</p>
+                    <%end%>
+                <% elsif @type == "milestone" %>
+                    <% if @search != nil%>
+                        <% if @search.length > 1 || @search.length == 0 %> 
+                            <h1><%=@search.length.to_s%> milestones match '<%=@query%>'</h1>
+                        <%elsif @search.length == 1%>
+                            <h1><%=@search.length.to_s%> milestone matches '<%=@query%>'</h1>
+                        <%end%>
+                        <% if @search.length > 0 %>
+                            <% @search.each do |milestone|%>
+                            <div class="card" style="width: 18rem;" onclick="window.location.href ='/projects/<%=milestone.project_id%>/milestones/<%=milestone.id%>'">
+                                <div class="card-body">
+                                    <a href="/projects/<%=milestone.project_id%>/milestones/<%=milestone.id%>" class="card-link"><h3 class="card-title" style = "color:dodgerblue"><%=milestone.title%></h3></a>
+                                    <p class="card-text"><%=milestone.description%></p>  
+                                    <p>Due Date: <%=milestone.duedate.strftime("%b %d, %Y")%></p>
+                                    <% if milestone.tasks.count != 0 %>
+                                        <p>Percent Complete: <%=((milestone.tasks.where(status: 6).count / milestone.tasks.count)) * 100%>%</p>
+                                    <% else %>
+                                        <p>Percent Complete: 0%</p>   
+                                    <% end %>                     
+                                </div>
+                            </div>
+                            <%end%>
+                        <%else%>
+                            <p>No milestones match your search.</p>
+                        <%end%>
+                    <%end%>
+                    <%else%>
+                    <h1>0 milestones match ' <%=@type%> <%=@query%>'</h1>
+                    <p>No milestones match your search.</p>
+                <% end %>
+            </div>
         </div>
     </div>
 </div>

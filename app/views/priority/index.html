@@ -1,0 +1,28 @@
+<div class = "main">
+    <div class = "container">
+        <div class = "row">
+            <div class = "col col-lg-12">
+                <br>
+                <a href = "/projects/<%=@project.id%>/edit">🡨 Return to <%=@project.title%> Edit page</a>
+                <h1>Priority Levels for <%=@project.title%></h1>
+                <a href = "/projects/<%=@project.id%>/priority/new">New Priority Level</a>
+                <br>
+                <% if @priority != nil %>
+                    <% if @priority.length > 0 %>
+                        <% @priority.each do |priority|%>
+                            <a href ="/projects/<%=@project.id%>/priority/<%=priority.id%>">
+                                <div>
+                                    <h4><%=priority.title%></h4> 
+                                </div>
+                            </a>
+                        <%end%>
+                    <%else%>
+                        <p>No priority levels for this project exist yet. Create a priority level now.</p>
+                    <%end%>
+                <%else%>
+                    <p>No priority levels for this project exist yet. Create a priority level now.</p>
+                <%end%>
+            </div>
+        </div>
+    </div>
+</div>

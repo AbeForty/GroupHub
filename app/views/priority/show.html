@@ -1,0 +1,16 @@
+<div class = "main">
+    <div class = "container">
+        <div class = "row">
+            <div class = "col col-lg-12">
+                <br>
+                <a href = "/projects/<%=@project.id%>/priority">🡨 Return to <%=@project.title%> Priority Levels</a>
+                <% if @status != nil %>
+                    <h1><%=@status.title%></h1>
+                    <br>
+                <%else%>
+                    <p>This status option doesn't exist.</p>
+                <%end%>
+            </div>
+        </div>
+    </div>
+</div>

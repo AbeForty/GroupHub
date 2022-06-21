@@ -2,49 +2,77 @@
 <html>
 <head>
   <title>GroupHub</title>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag  'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
 </head>
 <body>
 <% if current_user %>
-<nav class="navbar navbar-default">
+<% if current_organization %>
+  <nav class="navbar navbar-default customTheme" style="background-color:<%=current_organization.headercolor%>; border:0px; border-radius:0px;">
+<%else%>
+  <nav class="navbar navbar-default">
+<%end%>
   <div class="container-fluid">
     <div class="navbar-header">
+    <% if current_organization %>
+      <a class="navbar-brand customTheme" href="/">Group<span class="hubLogo customTheme">Hub</span></a>
+    <%else%>
       <a class="navbar-brand" href="/">Group<span class="hubLogo">Hub</span></a>
+    <%end%>
     </div>
-    <ul class="nav navbar-nav">
+    <ul class="nav navbar-nav"> 
       <% if request.path == '/dashboard' %>
         <li class="active"><a href="/dashboard">HOME</a></li>
       <%else%>
-          <li><a href="/dashboard">HOME</a></li>
+        <% if current_organization %>
+          <li><a class="customTheme" href="/dashboard">HOME</a></li>
+        <%else%>
+            <li><a href="/dashboard">HOME</a></li>
+        <%end%>
       <% end %>
       <% if request.path == '/projects' %>
         <li class = "active"><a href="/projects">YOUR PROJECTS</a></li>
       <%else%>
-        <li><a href="/projects">YOUR PROJECTS</a></li>
+        <% if current_organization %>
+          <li><a class="customTheme" href="/projects">YOUR PROJECTS</a></li>
+        <%else%>
+          <li><a href="/projects">YOUR PROJECTS</a></li>
+        <%end%>
       <% end %>
       <% if request.path == '/projects/all' %>
         <li class = "active"><a href="/projects/all">EXPLORE</a></li>
       <%else%>
-        <li><a href="/projects/all">EXPLORE</a></li>
+        <% if current_organization %>
+          <li><a class="customTheme" href="/projects/all">EXPLORE</a></li>
+        <%else%>
+          <li><a href="/projects/all">EXPLORE</a></li>
+        <%end%>
       <% end %>
       <% if request.path == '/users/'+ current_user.id.to_s %>
         <li class ="active"><a href="/users/<%=current_user.id.to_s%>">YOUR PROFILE</a></li>
       <%else%>
-        <li><a href="/users/<%=current_user.id.to_s%>">YOUR PROFILE</a></li>
+        <% if current_organization %>
+          <li><a class="customTheme" href="/users/<%=current_user.id.to_s%>">YOUR PROFILE</a></li>
+        <%else%>
+          <li><a href="/users/<%=current_user.id.to_s%>">YOUR PROFILE</a></li>
+        <%end%>
       <%end%>
+      <% if request.path == '/organizations/'+ current_organization.id.to_s %>
+        <li class ="active"><a href="/organizations/<%=current_organization.id.to_s%>">YOUR ORGANIZATION</a></li>
+      <%else%>
+      <% if current_organization %>
+        <% if current_organization.users_id = current_user.id %>
+          <li><a class="customTheme" href="/organizations/<%=current_organization.id.to_s%>">YOUR ORGANIZATION</a></li>
+        <%else%>
+          <li><a href="/organizations/<%=current_organization.id.to_s%>">YOUR ORGANIZATION</a></li>
+        <%end%>
+      <%end%>
+    <%end%>
     </ul> 
     <ul class="nav navbar-nav navbar-right">
      <form class="navbar-form navbar-left" action="/search" method = "POST">
-        <input type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
-          <% if @type != 'user'%>
-            <input type = "radio" name = "searchoption" value = "Projects" checked = "checked" id = "projects"> <label for="projects">Projects</label>
-            <input type = "radio" name = "searchoption" value = "Users" id = "users"> <label for="users">Users</label>
-          <% else %>
-            <input type = "radio" name = "searchoption" value = "Projects" id = "projects"> <label for="projects">Projects</label>
-            <input type = "radio" name = "searchoption" value = "Users"checked = "checked" id = "users"> <label for="users">Users</label>
-          <% end %>
+        <input type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">      
         <div class="input-group">
           <input type="text" class="form-control" placeholder="Search" name = "search_query">
           <div class="input-group-btn">
@@ -54,8 +82,21 @@
           </div>
         </div>
       </form> 
-      <li><a href="/users/<%=current_user.id%>"><%=current_user.name%></a></li>
-      <li><a href="/sessions/destroy" data-method = "delete">LOGOUT</a></li>
+      <% if current_organization %>
+        <li style="font-size:x-large; text-shadow:0.3px 0.3px 0.3px dimgrey;" title="HELP"><a class="customTheme" href="/help"><strong class="hubLogo customTheme">?</strong></a></li>
+      <%else%>
+        <li style="font-size:x-large; text-shadow:0.3px 0.3px 0.3px dimgrey;" title="HELP"><a href="/help"><strong class="hubLogo">?</strong></a></li>
+      <%end%>
+      <% if current_organization %>
+        <li><a class="customTheme" href="/users/<%=current_user.id%>"><%=current_user.name%></a></li>
+      <%else%>
+        <li><a href="/users/<%=current_user.id%>"><%=current_user.name%></a></li>
+      <%end%>
+      <% if current_organization %>
+        <li><a class="customTheme" href="/sessions/destroy" data-method = "delete">LOGOUT</a></li>
+      <%else%>
+        <li><a href="/sessions/destroy" data-method = "delete">LOGOUT</a></li>
+      <%end%>      
     </ul>
   </div>
 </nav>
@@ -73,24 +114,7 @@
       <% end %>
     </ul> 
     <ul class="nav navbar-nav navbar-right">
-      <form class="navbar-form navbar-left" action="/search" method ="POST">
-        <input type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
-          <% if @type != 'user'%>
-            <input type = "radio" name = "searchoption" value = "Projects" checked = "checked" id = "projects"> <label for="projects">Projects</label>
-            <input type = "radio" name = "searchoption" value = "Users"> <label for="users" id = "users">Users</label>
-          <% else %>
-            <input type = "radio" name = "searchoption" value = "Projects" id = "projects"> <label for="projects">Projects</label>
-            <input type = "radio" name = "searchoption" value = "Users"checked = "checked" id = "users"> <label for="users">Users</label>
-          <% end %>
-        <div class="input-group">
-          <input type="text" class="form-control" placeholder="Search" name = "search_query">
-          <div class="input-group-btn">
-            <button class="btn btn-default" type="submit">
-              Search
-            </button>         
-          </div>
-        </div>
-      </form> 
+      <li style="font-size:x-large; text-shadow:0.3px 0.3px 0.3px dimgrey;" title="HELP"><a href="/help"><strong class="hubLogo">?</strong></a></li>
       <li><a href="/">GUEST</a></li>
       <% if request.path == '/' %>
         <li class = "active"><a href="/">SIGN UP/LOGIN</a></li>
@@ -103,5 +127,18 @@
 <% end %>
 
 <%= yield %>
+<% if current_organization %>
+  <footer class = "customTheme" style="background-color:<%=current_organization.headercolor%>; border:0px; border-radius:0px;">
+<%else%>
+  <footer>
+<%end%>
+  <div class = "container">
+      <div class = "row">
+          <div class = "col col-lg-12" id="footerGroup">
+              <span id="copyright">© <%=Date.today.year%> <span id="logo"><img id = "tsLogo"src="<%=image_path("TSCircle.svg")%>"/> TECHNIC SQUAD </span><span> | <span class="darkRedText">Pre-release software for internal use only.</span></span></span>
+          </div>
+      </div>
+  </div>
+</footer>
 </body>
 </html>

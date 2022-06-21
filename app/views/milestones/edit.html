@@ -1,0 +1,37 @@
+<div class = "main">
+    <div class = "container">
+        <div class = "row">
+            <div class = "col col-lg-12">
+                <br>
+                <a href="/projects/<%=@project.id%>/milestones">🡨 Return to <%=@project.title%> Milestones</a>
+            <h1>Edit <%=@milestone.title%></h1>
+                <form action = "/projects/<%=@project.id%>/milestones/<%=@milestone.id%>" method = "POST">
+                    <input class = 'form-control' type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
+                    <input type = "hidden" name = "_method" value = "patch">
+                    <span>Milestone Name</span>
+                    <input class = 'form-control' type = "text" name = "title" placeholder = "Name your milestone" value = "<%=@milestone.title%>">
+                    <br>
+                    <br>
+                    <span style = "vertical-align: top;">Milestone Description</span>
+                    <textarea class = 'form-control' name = "description" placeholder="Describe your milestone"><%=@milestone.description%></textarea>
+                    <br>
+                    <br>               
+                    <span>Due Date:</span>
+                    <input class = 'form-control' type = "date" name = "duedate" value = "<%=@milestone.duedate.strftime("%Y-%m-%d")%>">
+                    <br>
+                    <br>
+                    <span>Status:</span>
+                    <select class = 'form-control' name = "status">
+                        <option value = 1>Open</option>
+                        <option value = 0>Closed</option>
+                    </select>
+                    <br>
+                    <br>
+                    <button class = "btn btn-primary">Update Milestone</button>
+                    <br>
+                    <br>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

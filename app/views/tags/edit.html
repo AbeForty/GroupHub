@@ -1,0 +1,22 @@
+<div class = "main">
+    <div class = "container">
+        <div class = "row">
+            <div class = "col col-lg-12">
+                <br>
+                <a href = "/projects/<%=@project.id%>/tags">🡨 Return to <%=@project.title%> Tags</a>
+                <h1>Edit <%=@tag.title%> from <%=@project.title%></h1>
+                <form action = "/projects/<%=@project.id%>/tags" method = "POST">
+                    <input class = 'form-control'type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
+                    <input type = "hidden" name = "_method" value = "patch">
+                    <span>Tag Name</span>
+                    <input class = 'form-control' type = "text" name = "title" placeholder = "Name your tag" value="<%=@tag.title%>"">
+                    <br>
+                    <br>
+                    <button class = "btn btn-primary">Update Tag</button>
+                    <br>
+                    <br>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

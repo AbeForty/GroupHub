@@ -1,18 +1,40 @@
-<div class = "container">
-    <div class = "row">
-        <div class = "col col-lg-12">
-            <h1>Edit your profile</h1>
-            <form action = "/users/<%=@user.id%>" method = "POST">
-                <input type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
-                <input type = "hidden" name = "_method" value = "patch">
-                <span>Name</span>
-                <input type = "text" name = "name" id = "name" class = 'form-control' value = "<%=@user.name%>">
-                <br>
-                <span>Email</span>
-                <input type = "text" name = "email" id = "email" class = 'form-control' value = "<%=@user.email%>">
-                <br>
-                <input type = "submit" name = "join" id = "join" value = "Update" class = "btn btn-primary">
-            </form>
+<div class = "main">
+    <div class = "container">
+        <div class = "row">
+            <div class = "col col-lg-12">
+                <h1>Edit your profile</h1>
+                <% if flash[:messages] %>
+                <% flash[:messages].each do |note| %>
+                  <p id="notice" class="alert alert-danger">
+                    <%= note %>
+                  </p>
+                  <% end %>
+              <% end %>
+                <form action = "/users/<%=@user.id%>" method = "POST">
+                    <input type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
+                    <input type = "hidden" name = "_method" value = "patch">
+                    <span>Name</span>
+                    <input type = "text" name = "name" id = "name" class = 'form-control' value = "<%=@user.name%>">
+                    <br>
+                    <span>Email</span>
+                    <br>   
+                    <% if @hideEmailStatus == true %>
+                        <input type = "checkbox" name = "hideEmail" id = "hideEmail" class = 'form-check-input' checked = "checked">
+                    <% elsif @hideEmailStatus == false  %>
+                        <input type = "checkbox" name = "hideEmail" id = "hideEmail" class = 'form-check-input'>
+                    <% end %>
+                    <label for="hideEmail" class="form-check-label">Show my email address</label>
+                    <input type = "text" name = "email" id = "email" class = 'form-control' value = "<%=@user.email%>">
+                    <br>
+                    <span>Password</span>
+                    <input type = "password" name = "password" id = "password" class = 'form-control' value = "">
+                    <br>
+                    <span>Confirm Password</span>
+                    <input type = "password" name = "password_confirmation" id = "password" class = 'form-control' value = "">
+                    <br>
+                    <input type = "submit" name = "join" id = "join" value = "Update" class = "btn btn-primary">
+                </form>
+            </div>
         </div>
     </div>
 </div>

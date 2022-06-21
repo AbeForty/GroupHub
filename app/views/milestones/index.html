@@ -1,0 +1,41 @@
+<div class = "main">
+    <div class = "container">
+        <div class = "row">
+            <div class = "col col-lg-12">
+                <br>
+                <a href = "/projects/<%=@project.id%>">🡨 Return to <%=@project.title%> Details</a>
+                <h1>Milestones for <%=@project.title%></h1>
+                <a href = "/projects/<%=@project.id%>/milestones/new">New Milestone</a>
+                <br>
+                <br>
+                <% if @project.milestones.length > 0 %>
+                    <% @project.milestones.each do |milestone|%>
+                        <div class="card" style="width: 25rem; height: 25rem;" onclick="window.location.href = '/projects/<%=@project.id%>/milestones/<%=milestone.id%>'">
+                            <div class="card-body">
+                            <a href="/projects/<%=@project.id%>/milestones/<%=milestone.id%>" class="card-link"><h3 class="card-title blueTitle"><%=milestone.title%></h3></a>
+                            <p class="card-text"><%=milestone.description%></p>     
+                            <p>Due Date: <%=milestone.duedate.strftime("%b %d, %Y")%></p>
+                                <p class="percentProgress">Percent Complete:</p>
+                                <span class="progressBKG" style="background-color:gainsboro;height:25px;">
+                                    <% if milestone.tasks.length != 0 %>
+                                        <% if ((milestone.tasks.where(status: 6).length / milestone.tasks.length.to_f) * 100).round(2) <= 50.00 %>
+                                            <p class="progressRed"style="width:<%=(((milestone.tasks.where(status: 6).length / milestone.tasks.length.to_f)) * 100).round(2)%>%;"><%=(((milestone.tasks.where(status: 6).length / milestone.tasks.length.to_f)) * 100).round(2)%>%</p>
+                                        <%elsif ((milestone.tasks.where(status: 6).length / milestone.tasks.length.to_f) * 100).round(2) > 50.00 and ((milestone.tasks.where(status: 6).length / milestone.tasks.length.to_f) * 100).round(2) < 75.00 %>
+                                            <p class="progressYellow"style="width:<%=(((milestone.tasks.where(status: 6).length / milestone.tasks.length.to_f)) * 100).round(2)%>%;"><%=(((milestone.tasks.where(status: 6).length / milestone.tasks.length.to_f)) * 100).round(2)%>%</p>
+                                        <%elsif ((milestone.tasks.where(status: 6).length / milestone.tasks.length.to_f) * 100).round(2) >= 75.00 %>
+                                            <p class="progressGreen"style="width:<%=(((milestone.tasks.where(status: 6).length / milestone.tasks.length.to_f)) * 100).round(2)%>%;"><%=(((milestone.tasks.where(status: 6).length / milestone.tasks.length.to_f)) * 100).round(2)%>%</p>
+                                        <%end%>                                                
+                                    <% else %>
+                                        <span class="progressBKG" style="background-color:gainsboro;height:25px;"><p class="progressGreen"style="width:0px;">0.0%</p></span>
+                                    <% end %>
+                                </span>
+                        </div>
+                    </div>
+                    <%end%>
+                <%else%>
+                    <p>No milestones exist yet. Create a milestone now.</p>
+                <% end %>
+            </div>
+        </div>
+    </div>
+</div>

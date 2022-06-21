@@ -1,0 +1,22 @@
+<div class = "main">
+    <div class = "container">
+        <div class = "row">
+            <div class = "col col-lg-12">
+                <br>
+                <a href = "/projects/<%=@project.id%>/priority">🡨 Return to <%=@project.title%> Priority Levels</a>
+                <h1>Edit <%@priority.title%> from <%=@project.title%></h1>
+                <form action = "/projects/<%=@project.id%>/status" method = "POST">
+                    <input class = 'form-control'type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
+                    <input type = "hidden" name = "_method" value = "patch">
+                    <span>Priority Level Name</span>
+                    <input class = 'form-control' type = "text" name = "title" placeholder = "Name your priority level">
+                    <br>
+                    <br>
+                    <button class = "btn btn-primary">Update priority Option</button>
+                    <br>
+                    <br>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

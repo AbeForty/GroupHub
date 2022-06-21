@@ -1,26 +1,53 @@
-<div class = "container">
-    <div class = "row">
-        <div class = "col col-lg-12">
-            <h1>Create a Project</h1>
-            <form action = "/projects" method = "POST">
-                <input class = 'form-control' type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
-                <span>Project Name</span>
-                <input class = 'form-control' type = "text" name = "title" placeholder = "Name your project">
-                <br>
-                <br>
-                <label style = "vertical-align: top;">Project Description</label>
-                <textarea class = 'form-control' name = "description" placeholder="Describe your project"></textarea>
-                <br>
-                <br>
-                <label style = "vertical-align: top;">Group Members</label>
-                <select class = 'form-control' multiple = "multiple" name = "members[]">
-                    <%= @users.each do |user|%>
-                        <option value = "<%=user.id%>"><%=user.name%></option>
+<div class = "main">
+    <div class = "container">
+        <div class = "row">
+            <div class = "col col-lg-12">
+                <h1>Create a Project</h1>
+                <form action = "/projects" method = "POST">
+                    <input class = 'form-control' type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
+                    <span>Project Name</span>
+                    <input class = 'form-control' type = "text" name = "title" placeholder = "Name your project">
+                    <br>
+                    <br>
+                    <label style = "vertical-align: top;">Project Description</label>
+                    <textarea class = 'form-control' name = "description" placeholder="Describe your project"></textarea>
+                    <br>
+                    <br>
+                    <label style = "vertical-align: top;">Project Visibility</label>
+                    <select class = 'form-control' name = "visibilityFlag">
+                        <%= @visibilityFlags.each do |flag|%>
+                            <option value = "<%=flag.id%>"><%=flag.flag%></option>
+                        <%end%>
+                    </select>                    
+                    <br>
+                    <br>
+                    <span>Due Date:</span>
+                    <input class = 'form-control' type = "date" name = "duedate">
+                    <% if current_organization != nil %>
+                    <br>
+                    <br>
+                    <label style = "vertical-align: top;">Organization</label>
+                    <select class = 'form-control' name = "organization">
+                        <option value = "0">None</option>
+                        <%= @Organizations.each do |organization|%>
+                            <option value = "<%=organization.id%>"><%=organization.name%></option>
+                        <%end%>
+                    </select>      
                     <%end%>
-                </select>
-                <br>
-                <button class = "btn btn-primary">Create Project</button>
-            </form>
+                    <br>
+                    <br>
+                    <label style = "vertical-align: top;">Group Members</label>
+                    <select class = 'form-control' multiple = "multiple" name = "members[]">
+                        <%= @users.each do |user|%>
+                            <option value = "<%=user.id%>"><%=user.name%></option>
+                        <%end%>
+                    </select>
+                    <br>
+                    <button class = "btn btn-primary">Create Project</button>
+                    <br>
+                    <br>
+                </form>
+            </div>
         </div>
     </div>
 </div>

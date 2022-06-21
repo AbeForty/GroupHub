@@ -1,0 +1,175 @@
+<div class = "main">
+    <div class="container">
+        <div class="row">
+            <div class="col col-lg-12">
+                <br>
+                <a href="/projects/<%=@project.id%>/milestones">🡨 Return to <%=@project.title%> Milestones</a>
+                <br>
+                <h1 class="blueProjectTitle" style="display:inline-block"><%=@milestone.title%></h1>
+                <span><a href="/projects/<%=@project.id%>/milestones/<%=@milestone.id%>/edit">Edit</a></span>
+                <h5><%=@milestone.description%> | Due Date: <%=@milestone.duedate.strftime("%b %d, %Y")%></h5> 
+                <h5 class="percentProgress">Percent Complete: 
+                    <span class="progressBKGSmall" style="background-color:gainsboro;height:25px;">
+                            <% if @percent <= 50.00 %>
+                                <p class="progressRed"style="width:<%=@percent%>%;"><%=@percent%>%</p>
+                            <%elsif @percent > 50.00 and @percent< 75.00 %>
+                                <p class="progressYellow"style="width:<%=@percent%>%;"><%=@percent%>%</p>
+                            <%elsif @percent >= 75.00 %>
+                                <p class="progressGreen"style="width:<%=@percent%>%;"><%=@percent%>%</p>
+                            <%end%>                                                  
+                    </span>    
+                <% if @milestone.status == 1%>
+                    <h5>Status: Open <a href="/projects/<%=@project.id%>/milestones/<%=@milestone.id%>/close" data-method = "patch">Close</a></h5>
+                <%else%>
+                    <h5>Status: Closed <a href="/projects/<%=@project.id%>/milestones/<%=@milestone.id%>/open" data-method = "patch">Open</a></h5>
+                <%end%>
+                <h5>Project: <a href="/projects/<%=@project.id%>"><%=@project.title%></a></h5>
+                <div id = "tasks">
+                    <% if @project.members.include?(Member.find_by(user: current_user)) || @project.user == current_user %>
+                        <h2 style ="display: inline-block">Tasks</h2>
+                            <a href = "/projects/<%=@project.id%>/tasks">View All</a>
+                            <br>
+                            <% if @milestone.status == 1%>
+                                <a href = "/projects/<%=@project.id%>/tasks/new">Add Task</a>
+                            <%else%>
+                                <a href = "" style="color:dimgray">Add Task</a>
+                            <%end%>
+                            <br>
+                            <br>
+                            <div id = "milestone-task-list" class="col col-lg-10 d-flex justify-content-center">
+                                <br>
+                                <% if @milestone.tasks.length > 0%>
+                                    <% @milestone.tasks.each do |task|%>
+                                        <% if task.status != 3%>
+                                            <span class="card taskCard" onclick="window.location.href = '/projects/<%=@project.id%>/tasks/<%=task.id%>'">
+                                                <div class="card-body">
+                                                    <div class="statusFlag" style="background-color:<%=StatusType.find(task.status).color%>;"><a href="/search/status:<%=StatusType.find(task.status).title%>"><%=StatusType.find(task.status).title%></a></div>
+                                                    <a href="/projects/<%=@project.id%>/tasks/<%=task.id%>" class="card-link"><h3 class="card-title blueTitle"><%=task.title%></h3></a>
+                                                    <a href="/users/<%=task.user.id%>"><h6 class="card-subtitle mb-2 text-muted"><%=task.user.name%></h6></a>
+                                                    <p class="card-text twoLineText"><%=task.description%></p>
+                                                    <%if PriorityType.find_by(id: task.PriorityType_id) != nil%>
+                                                        <h6 class="card-subtitle mb-2 text-muted">Priority: <%=PriorityType.find_by(id: task.PriorityType_id).title%></h6>
+                                                    <%else%>
+                                                        <h6 class="card-subtitle mb-2 text-muted">Priority: None</h6>
+                                                    <%end%>
+                                                    Tags:
+                                                    <% if TagTask.where(task_id:task.id).length != 0%>
+                                                    <%TagTask.where(task_id:task.id).each do |tag|%>
+                                                        <%if tag == TagTask.where(task_id:task.id).last%>
+                                                            <span><a href="/search/tag:<%=Tag.find(tag.tag_id).title%>"><%=Tag.find(tag.tag_id).title%></a></span>
+                                                        <%else%>
+                                                            <span><a href="/search/tag:<%=Tag.find(tag.tag_id).title%>"><%=Tag.find(tag.tag_id).title%>,</a></span>
+                                                        <%end%>
+                                                    <%end%>
+                                                <%else%>
+                                                    None
+                                                <%end%>
+                                                    <%if task.user == current_user %>
+                                                        <form action = "/projects/<%=@project.id%>/tasks/<%=task.id%>/status" method = "POST">
+                                                            <input type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
+                                                            <input type = "hidden" name = "_method" value = "patch">                                                     
+                                                            <%if task.duedate != nil%>
+                                                                <h6 class="card-subtitle mb-2 text-muted">Due Date: <%=task.duedate.strftime("%b %d, %Y")%></h6> 
+                                                            <%else%>
+                                                                <h6 class="card-subtitle mb-2 text-muted">Due Date: None</h6> 
+                                                            <%end%>                
+                                                                <% if task.milestone.try(&:title)%>
+                                                                    <p class="milestoneText">Milestone: <a href ="/projects/<%=@project.id%>/milestones/<%=task.milestone.id%>"><%=task.milestone.try(&:title)%></a></p>
+                                                                <%else%>
+                                                                    <span class="milestoneText">Milestone: None</span>
+                                                                <%end%>
+                                                                <select name = "status" id = "status">
+                                                                    <% if @status != nil %>
+                                                                        <%@status.each do |status|%>
+                                                                            <% if task.status == status.id%>
+                                                                                <option value = "<%=status.id%>" selected = "selected"><%=status.title%></option>
+                                                                            <% else %>
+                                                                                <option value = "<%=status.id%>"><%=status.title%></option>
+                                                                            <%end%>
+                                                                        <%end%>  
+                                                                    <%end%>
+                                                                    <% if @statusAll != nil %>
+                                                                        <%@statusAll.each do |status|%>
+                                                                            <% if task.status == status.id%>
+                                                                                <option value = "<%=status.id%>" selected = "selected"><%=status.title%></option>
+                                                                            <% else %>
+                                                                                <option value = "<%=status.id%>"><%=status.title%></option>
+                                                                            <%end%>
+                                                                        <%end%>
+                                                                    <%end%>   
+                                                                </select>
+                                                                <br>
+                                                                <br>
+                                                                <button class = "btn btn-primary">Update Status</button>
+                                                            </form>
+                                                            <%else%>                                                        
+                                                            <%if task.duedate != nil%>
+                                                            <h6 class="card-subtitle mb-2 text-muted">Due Date: <%=task.duedate.strftime("%b %d, %Y")%></h6> 
+                                                        <%else%>
+                                                            <h6 class="card-subtitle mb-2 text-muted">Due Date: None</h6> 
+                                                        <%end%>
+                                                        <%if PriorityType.find_by(id: task.PriorityType_id) != nil%>
+                                                            <h6 class="card-subtitle mb-2 text-muted">Priority: <%=PriorityType.find_by(id: task.PriorityType_id).title%></h6>     
+                                                        <%else%>                          
+                                                            <h6 class="card-subtitle mb-2 text-muted">Priority: None</h6>     
+                                                        <%end%>
+                                                        Tags:                                                        
+                                                        <% if TagTask.where(task_id:task.id).length != 0%>
+                                                            <%TagTask.where(task_id:task.id).each do |tag|%>
+                                                                <%if tag == TagTask.where(task_id:task.id).last%>
+                                                                    <span><a href="/search/tag:<%=Tag.find(tag.tag_id).title%>"><%=Tag.find(tag.tag_id).title%></a></span>
+                                                                <%else%>
+                                                                    <span><a href="/search/tag:<%=Tag.find(tag.tag_id).title%>"><%=Tag.find(tag.tag_id).title%>,</a></span>
+                                                                <%end%>
+                                                            <%end%>
+                                                        <%else%>
+                                                            None
+                                                        <%end%>
+                                                        <br>                
+                                                        <% if task.milestone.try(&:title)%>
+                                                            <p class="milestoneText">Milestone: <a href ="/projects/<%=@project.id%>/milestones/<%=task.milestone.id%>"><%=task.milestone.try(&:title)%></a></p>
+                                                        <%else%>
+                                                            <span class="milestoneText">Milestone: None</span>
+                                                        <%end%>
+                                                                <select name = "status" id = "status" disabled="disabled">
+                                                                    <% if @status != nil %>
+                                                                        <%@status.each do |status|%>
+                                                                            <% if task.status == status.id%>
+                                                                                <option value = "<%=status.id%>" selected = "selected"><%=status.title%></option>
+                                                                            <% else %>
+                                                                                <option value = "<%=status.id%>"><%=status.title%></option>
+                                                                            <%end%>
+                                                                        <%end%>  
+                                                                    <%end%>
+                                                                    <% if @statusAll != nil %>
+                                                                        <%@statusAll.each do |status|%>
+                                                                            <% if task.status == status.id%>
+                                                                                <option value = "<%=status.id%>" selected = "selected"><%=status.title%></option>
+                                                                            <% else %>
+                                                                                <option value = "<%=status.id%>"><%=status.title%></option>
+                                                                            <%end%>
+                                                                        <%end%>
+                                                                    <%end%>          
+                                                                </select>
+                                                            <%end%>
+                                                            
+                                                    <!-- <script>
+                                                        $('#status').val()
+                                                    </script> -->
+                                                    <h6 class="card-subtitle mb-2 text-muted"><%=task.duedate.strftime("%b %d, %Y")%></h6>                
+                                                </div>
+                                            </span>
+                                        <%end%>
+                                    <%end%>
+                                <%else%>
+                                    <p>There are no tasks for this milestone yet.</p>
+                                <%end%>
+                            </div>
+                    <%else%>
+                        <p class="blueTitle">To see the milestones for this project, you must be a member of this project. Click the Join link on the project to request membership in this project.</p>
+                    <%end%>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

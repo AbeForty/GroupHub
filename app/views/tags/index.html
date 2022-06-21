@@ -1,0 +1,28 @@
+<div class = "main">
+    <div class = "container">
+        <div class = "row">
+            <div class = "col col-lg-12">
+                <br>
+                <a href = "/projects/<%=@project.id%>/edit">🡨 Return to <%=@project.title%> Edit page</a>
+                <h1>Tags for <%=@project.title%></h1>
+                <a href = "/projects/<%=@project.id%>/tags/new">New tag</a>
+                <br>
+                <% if @tag != nil %>
+                    <% if @tag.length > 0 %>
+                        <% @tag.each do |tag|%>
+                            <a href ="/projects/<%=@project.id%>/tags/<%=tag.id%>">
+                                <div>
+                                    <h4><%=tag.title%></h4> 
+                                </div>
+                            </a>
+                        <%end%>
+                    <%else%>
+                        <p>No tags for this project exist yet. Create a tag now.</p>
+                    <%end%>
+                <%else%>
+                    <p>No tags for this project exist yet. Create a tag now.</p>
+                <%end%>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+<div class = "main">
+    <div class = "container">
+        <div class = "row">
+            <div class = "col col-lg-12">
+                <br>
+                <a href = "/projects/<%=@project.id%>/tag">🡨 Return to <%=@project.title%> Tags</a>
+                <h1>Add a new a tag to <%=@project.title%></h1>
+                <form action = "/projects/<%=@project.id%>/tags" method = "POST">
+                    <input class = 'form-control'type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
+                    <span>Tag Name</span>
+                    <input class = 'form-control' type = "text" name = "title" placeholder = "Name your tag">
+                    <br>
+                    <br>
+                    <button class = "btn btn-primary">Create Tag</button>
+                    <br>
+                    <br>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

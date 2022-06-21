@@ -1,0 +1,70 @@
+<div class = "main">
+    <div class = "container">
+        <div class = "row">
+            <div class = "col col-lg-12">
+                <% if !current_user %>
+                    <br>
+                    <div class="alert alert-warning">
+                        Create an account or log in to create your own projects on GroupHub.
+                    </div>
+                <%end%>
+                <div id="yourProjectsArea" class="dashboardArea">
+                <h1 style="display: inline-block;"><%=@organization.name%></h1>
+                <% if @owner == current_user %>
+                    <a href = "/organizations/<%=@organization.id%>/edit">Edit </a>
+                    <br>
+                    <% if @companycode != nil %>
+                        Organization Code:
+                        <h3 style="margin-top:0px;"><%=@companycode.code%></h3>
+                    <% else %>
+                        <form action = "/organizations/<%=@organization.id%>/generatecode" method = "POST">
+                            <input class = 'form-control' type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
+                            <button class = "btn btn-primary">Generate Code</button>
+                        </form>
+                    <% end %>
+                <%end%>
+                <div id="collabDiv">
+                    <h4 style="color:dodgerblue">Members:</h4>
+                    <% if @organizationUsers.length > 0 %>
+                        <% @organizationUsers.each do |member|%>
+                            <a class ="collabUserBox" href="/users/<%=member.id%>">
+                                <span>
+                                    <p class="profileCircle"><img class="profileIcon" src="<%=image_path("PersonIcon.svg")%>"></p>
+                                    <p class="collabUserText"><%=member.name%></p>
+                                </span>                                                
+                            </a>
+                        <%end%>
+                    <%else%>
+                        <span>There are no additional collaborators.</span>
+                    <%end%>
+                </div>
+                <% if @Organization != current_organization %>
+                    <h3>Their Projects</h3>
+                    <p>These are all of the projects that are visible to you. The organization may have created additional projects that aren't visible to you. Please contact the organization for access.</p>
+                <%else%>
+                    <h3>Your Organization's Projects</h3>
+                <%end%>
+                <% if @organizationProjects.length > 0 %>
+                    <% @organizationProjects.each do |project|%>
+                        <span class="card projectCard" onclick="window.location.href = '/projects/<%=project.id%>';">
+                            <div class="card-body">
+                                <a href="/projects/<%=project.id%>" class="card-link"><h4 class="card-title blueTitle"><%=project.title%></h4></a>
+                                <a href="/users/<%=project.user.id%>" onclick="event.stopPropagation()"><h6 class="card-subtitle mb-2 text-muted"><%=project.user.name%></h6></a>
+                                <p class="card-text"><%=project.description%></p>
+                                <h6 class="card-subtitle mb-2 text-muted"><%=project.created_at.strftime("%b %d, %Y")%></h6>                
+                            </div>
+                        </span>
+                    <% end %>
+                <%else%>
+                    <% if !@organizationUsers.include? current_user %>
+                        <p>They haven't created any <i>public</i> projects yet. They may have created projects that aren't visible to you. Please contact the organization for access.</p>
+                    <%else%>
+                        <p>You haven't created any projects yet.</p>
+                    <%end%>
+                <% end %>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>

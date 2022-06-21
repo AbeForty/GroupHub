@@ -1,57 +1,122 @@
-<div class = "container">
-    <div class = "row">
-        <div class = "col col-lg-12">
-           <h1>Edit <%=@task.title%></h1>
-            <form action = "/projects/<%=@project.id%>/tasks/<%=@task.id%>" method = "POST">
-                <input class = 'form-control' type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
-                <input type = "hidden" name = "_method" value = "patch">
-                <span>Task Name</span>
-                <input class = 'form-control' type = "text" name = "title" placeholder = "Name your task" value = "<%=@task.title%>">
-                <br>
-                <br>
-                <span style = "vertical-align: top;">Task Description</span>
-                <textarea class = 'form-control' name = "description" placeholder="Describe your task"><%=@task.description%></textarea>
-                <br>
-                <br>
-                <span>Task Status</span>
-                <select name = "status">
-                    <%if @task.status == 1 %>
-                        <option value = "1" selected = "selected">Not started</option>
-                        <option value = "2">In progress</option>
-                        <option value = "3">Completed</option>            
+<div class = "main">
+    <div class = "container">
+        <div class = "row">
+            <div class = "col col-lg-12">
+            <br>
+            <a href = "/projects/<%=@project.id%>/tasks/<%=@task.id%>">🡨 Return to <%=@task.title%> details</a>
+            <h1>Edit <%=@task.title%></h1>
+                <form action = "/projects/<%=@project.id%>/tasks/<%=@task.id%>" method = "POST">
+                    <input class = 'form-control' type = "hidden" name = "authenticity_token" value = "<%= form_authenticity_token%>">
+                    <input type = "hidden" name = "_method" value = "patch">
+                    <span>Task Name</span>
+                    <input class = 'form-control' type = "text" name = "title" placeholder = "Name your task" value = "<%=@task.title%>">
+                    <br>
+                    <br>
+                    <span style = "vertical-align: top;">Task Description</span>
+                    <textarea class = 'form-control' name = "description" placeholder="Describe your task"><%=@task.description%></textarea>
+                    <br>
+                    <br>
+                    <span>Task Status</span>
+                    <select class = 'form-control' name = "status">
+                        <%if @status != nil %>
+                            <%@status.each do |status|%>
+                                <% if @task.status == status.id%>
+                                    <option value = "<%=status.id%>" selected = "selected"><%=status.title%></option>
+                                <% else %>
+                                    <option value = "<%=status.id%>"><%=status.title%></option>
+                                <%end%>
+                            <%end%>  
+                        <%end%>
+                        <%if @statusAll != nil%>
+                            <%@statusAll.each do |status|%>
+                                <% if @task.status == status.id%>
+                                    <option value = "<%=status.id%>" selected = "selected"><%=status.title%></option>
+                                <% else %>
+                                    <option value = "<%=status.id%>"><%=status.title%></option>
+                                <%end%>
+                            <%end%> 
+                        <%end%>        
+                    </select>
+                    <br>
+                    <br>
+                    <span>Task Priority</span>
+                        <select class = 'form-control' name = "priority">
+                            <option value = "0">None</option>               
+                            <%if @priorityAll != nil %>
+                                <%@priorityAll.each do |priority|%>
+                                    <% if @task.PriorityType_id == priority.id%>
+                                        <option value = "<%=priority.id%>" selected = "selected"><%=priority.title%></option>
+                                    <% else %>
+                                        <option value = "<%=priority.id%>"><%=priority.title%></option>
+                                    <%end%>
+                                <%end%>  
+                            <%end%>
+                            <%if @priority != nil %>
+                                <%@priority.each do |priority|%>
+                                    <% if @task.PriorityType_id == priority.id%>
+                                        <option value = "<%=priority.id%>" selected = "selected"><%=priority.title%></option>
+                                    <% else %>
+                                        <option value = "<%=priority.id%>"><%=priority.title%></option>
+                                    <%end%>
+                                <%end%>
+                            <%end%>       
+                        </select>
+                    <br>
+                    <br>
+                    <span>Tags</span>
+                    <%if @tag != nil%>
+                        <select class = 'form-control' name = "tags[]" multiple="multiple">
+                            <!-- <option value = "0">None</option> -->
+                                <%@tag.each do |tag|%>
+                                    <% if Tag.where(project_id:@project.id)%>
+                                        <% if @tagtask.exists?(tag_id: tag.id) %>
+                                            <option value = "<%=tag.id%>" selected="selected"><%=Tag.find(tag.id).title%></option>
+                                        <%else%>
+                                            <option value = "<%=tag.id%>"><%=tag.title%></option>
+                                        <%end%>
+                                    <%end%>
+                                <%end%>                      
+                        </select>
+                    <%else%>
+                        <p>No tags for this project exist yet. Create a tag now.</p>
                     <%end%>
-                    <%if @task.status == 2 %>
-                        <option value = "1">Not started</option>
-                        <option value = "2" selected = "selected">In progress</option>
-                        <option value = "3">Completed</option>            
-                    <%end%>
-                    <%if @task.status == 3 %>
-                        <option value = "1">Not started</option>
-                        <option value = "2">In progress</option>
-                        <option value = "3" selected = "selected">Completed</option>            
-                    <%end%>
-                </select>
-                <br>
-                <br>
-                <span>Due Date:</span>
-                <input class = 'form-control' type = "date" name = "duedate" value = "<%=@task.duedate%>">
-                <br>
-                <br>
-                <span>Assign to:</span>
-                    <select name = "owner">            
-                        <option value = <%=@project.id%>><%=@project.user.name%></option>
-                        <%= @member.each do |member|%>
-                            <% if member == @task.user %>
-                                <option value = "<%=member.id%>"selected = "selected"><%=member.name%></option>
+                    <br>
+                    <br>
+                    <span>Due Date:</span>
+                    <input class = 'form-control' type = "date" name = "duedate" value = "<%=@task.duedate%>">
+                    <br>
+                    <br>
+                    <span>Assign to:</span>
+                        <select class = 'form-control' name = "owner">            
+                            <option value = <%=@project.user.id%>><%=@project.user.name%></option>
+                            <%= @member.each do |member|%>
+                                <% if member == @task.user %>
+                                    <option value = "<%=member.id%>"selected = "selected"><%=member.name%></option>
+                                <%else%>
+                                    <option value = "<%=member.id%>"><%=member.name%></option>
+                                <%end%>
+                            <%end%>
+                        </select>
+                    <br>
+                    <br>
+                    <span>Milestone:</span>
+                    <select class = 'form-control' name = "milestone">
+                        <option value = "0">None</option>
+                        <%= @milestone.each do |milestone|%>
+                            <% if milestone.id == @task.milestone.try(:id)%>
+                                <option value = "<%=milestone.id%>" selected="selected"><%=milestone.title%></option>
                             <%else%>
-                                <option value = "<%=member.id%>"><%=member.name%></option>
+                                <option value = "<%=milestone.id%>"><%=milestone.title%></option>
                             <%end%>
                         <%end%>
                     </select>
-                <br>
-                <br>
-                <button class = "btn btn-primary">Update Task</button>
-            </form>
+                    <br>
+                    <br>
+                    <button class = "btn btn-primary">Update Task</button>
+                    <br>
+                    <br>
+                </form>
+            </div>
         </div>
     </div>
 </div>
