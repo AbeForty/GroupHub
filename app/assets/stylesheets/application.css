@@ -14,19 +14,396 @@
  *= require_tree .
  *= require_self
  */
- *{
-     font-family: "Bahnschrift Semibold" !important;
-    }
+*{
+    font-family: "Bahnschrift Semibold" !important;
+}
+/* nav:before{
+    backdrop-filter:blur(10px);
+    opacity:0.5;
+} */
+/* h1 {
+    text-shadow: 1px 1px 1px dimgrey;
+}
+h2{
+    text-shadow: 1px 1px 1px dimgrey;
+} */
+/* navbar{
+    box-shadow: rgb(0 0 0 / 25%) 0px 1px 1px, rgb(0 0 0 / 7%) 0px 2px 4px, rgb(0 0 0 / 7%) 0px 4px 8px, rgb(0 0 0 / 7%) 0px 8px 16px!important;
+    background-color: rgba(255, 255, 255, 0.5)!important;
+    backdrop-filter: blur(20px)!important;
+}
+footer{
+    box-shadow: rgb(0 0 0 / 25%) 0px 1px 1px, rgb(0 0 0 / 7%) 0px 2px 4px, rgb(0 0 0 / 7%) 0px 4px 8px, rgb(0 0 0 / 7%) 0px 8px 16px!important;
+    background-color: rgba(255, 255, 255, 0.5)!important;
+    backdrop-filter: blur(20px)!important;
+} */
+:root {
+    --light: 60;
+    /* the threshold at which colors are considered "light." Range: integers from 0 to 100,
+  recommended 50 - 70 */
+    --threshold: 80;
+  }
+.navbar-default .navbar-nav>li>a.customTheme, .navbar-brand.customTheme, .nav .navbar-nav .navbar-right.customTheme{
+  --switch: calc((var(--light) - var(--threshold)) * -100%);
+  color: hsl(0, 0%, var(--switch));
+  }
+.milestoneText{
+    white-space: normal;
+}
+.helpHeader{
+    font-size: 24.0pt; 
+    line-height: 107%; 
+    font-family: 'Bahnschrift SemiBold', sans-serif; color: #777777;
+}
+.helpHeaderBlack{
+    font-size: 24.0pt; 
+    line-height: 107%; 
+    font-family: 'Bahnschrift SemiBold',sans-serif;
+}
+.helpSubHeader{
+    font-size: 16.0pt; 
+    font-weight: bolder;
+    line-height: 107%; 
+    font-family: 'Bahnschrift',sans-serif;
+}
+.helpBodyText{
+    font-size: 12.0pt;
+    line-height: 107%; 
+    font-family: 'Bahnschrift',sans-serif;
+}
+.helpSearchSubHeader{
+    font-size: 14.0pt; 
+    line-height: 107%; 
+    font-family: 'Bahnschrift',sans-serif;
+}
+.helpUpcomingFeatureDisclaimer{
+    font-size: 10.0pt; 
+    line-height: 107%; 
+    font-family: 'Bahnschrift',sans-serif;
+}
+.helpSearchCategoryHeader{
+    font-size: 14.0pt; 
+    line-height: 107%; 
+    font-family: 'Bahnschrift',sans-serif;
+}
+.helpSearchExplanation{
+    font-size: 10.0pt; 
+    line-height: 107%; 
+    font-family: 'Bahnschrift',sans-serif;
+}
+.helpImage{
+    display:block;
+    width:80%; 
+    margin-left:auto; 
+    margin-right:auto;
+}
+.helpContentHeader{
+    color:#5e5e5e;
+}
+.content{
+    padding: 0 18px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}
+#loginAnimation{
+    width:100%;
+}
+.overlay{
+    position: fixed; /* Sit on top of the page content */
+    display: none; /* Hidden by default */
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.1); /* White background with opacity */
+    z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer; /* Add a pointer on hover */
+    backdrop-filter:blur(10px)
+}
+.overlayInner{
+    /* margin-left: auto;
+    margin-right: auto; */
+    margin:auto;
+    width: 40%;
+    height:50%;
+    cursor:text;
+}
+#registerOverlayInner{
+    margin-top:12%;
+}
+#loginOverlayInner{
+    margin-top:20%;
+}
+#join{
+    width: 100%;
+}
+#login{
+    width: 100%;
+}
+#noAccountLink, #haveAccountLink{
+    text-align: center;
+    cursor:pointer;
+    /* text-shadow: 1px 1px 1px #5e5e5e; */
+}
+.clickTextHover:hover{
+    text-decoration: underline;
+}
+.clickTextHover:not(:hover){
+    text-decoration: none;
+}
+.closeOverlay {
+    position: relative;
+}
+.closeOverlay {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    height:25px;
+    width:25px;
+}
+.profileCircle{
+    height:50px; 
+    width:50px; 
+    border-radius:25px; 
+    text-align:center;  
+    box-shadow: 1px 1px 1px #000000; 
+    margin:auto;
+    background-color:dodgerblue; 
+    backdrop-filter:blur(1px);
+}
+.profileIcon{
+    height: 50px; 
+    width:50px;
+}
+.collabUserText{
+    margin-bottom:0;
+}
+.userSearchCard{
+    width:100%; 
+    text-align:center;
+}
+.waitlisterUserText{
+    width:100%;
+    text-align:center;
+}
+.collabUserBox{
+    display:inline-block; 
+    margin-right:20px;
+}
+.collabUserBox:hover{
+    transform: scale(1.025) translateZ(0);
+}
+#registerLoginDock{
+    /* display:block;
+    margin-left: auto;
+    margin-right: auto; */
+    /* padding: 10px;
+    width: 16%;
+    margin:auto; */
+    text-align: center;
+}
+#signUpButton{
+    height:35px; 
+    width:75px; 
+}
+#loginButton{
+    height:35px; 
+    width:75px; 
+}
+.darkRedText{
+    color:darkred;
+}
+nav{
+    position:absolute; 
+    top:0px; 
+    left:0px; 
+    height:50px; 
+    right:0px;
+    overflow:hidden;
+    box-shadow: 0.5px 0.2px 0.5px #000000;
+}
+.dashboardArea{
+    min-height:200px;
+    margin-left:auto;
+    margin-right:auto;
+}
+.main{
+    position:absolute; 
+    top:50px; 
+    bottom:35px; 
+    left:0px; 
+    right:0px; 
+    overflow:auto;
+}
+#footerGroup{
+    line-height: 35px;
+}
+#logoText{
+    font-size: 36pt;
+}
+footer{
+    background-color:#f8f8f8;
+    box-shadow: 4px 4px 10px #000000;
+    position:absolute; 
+    bottom:0px; 
+    height:35px; 
+    left:0px; 
+    right:0px; 
+    overflow:hidden;
+}
+#logo{
+    color:dodgerblue;
+    text-shadow: 0.5px 0.5px 0.5px dimgrey;
+}
+#tsLogo{
+    height:25px;
+    width:25px;
+}
 a{
     color:dodgerblue;
 }
+.blueLink{
+    color:dodgerblue;
+    text-shadow: 0.2px
+     0.2px 0.2px dimgrey;
+}
+.blueProjectTitle{
+    color:dodgerblue;
+    text-shadow: 0.3px 0.3px 0.3px dimgrey;
+}
 .blueTitle{
     color:dodgerblue;
+    text-shadow: 0.3px 0.3px 0.3px dimgrey;
+    /* max-height:40px; */
+    /* line-clamp:2;
+    -webkit-line-clamp: 2; */
+    /* overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; */
+    display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;  
+  overflow:hidden;
+  white-space:initial;
 }
 .btn-primary{
     background-color:dodgerblue !important;
 }
-
+#task-list{
+    overflow:auto;
+    min-height:100px;
+    max-height: 400px;
+    width:100%;
+}
+#unfinished-task-list{
+    overflow:auto;
+    min-height:100px;
+    max-height: 457px;
+    width:100%;
+    white-space: nowrap;
+}
+#milestone-task-list{
+    overflow:auto;
+    min-height:100px;
+    max-height: 510px;
+    width:100%;
+    white-space: nowrap;
+}
+.twoLineText{
+    white-space: initial;
+}
+#welcomeText, #sloganText{
+    text-align:center;
+    font-size:12pt;
+}
+.statusFlag{
+    color:white;
+    height:20px;
+    width:105.500px;
+    text-shadow: 1px 1px 1px #000000;
+    box-shadow: 1px 1px 1px #000000;
+    border-radius: 2px;
+    text-align: center;
+    margin-bottom: 5px;
+}
+.statusFlag a{
+    color:white;
+}
+.progressBKG{
+    background-color:gainsboro;
+    height:25px;
+    display:inline-block;
+    width:100%;
+}
+.progressBKGSmall{
+    background-color:gainsboro;
+    height:25px;
+    display:inline-block;
+    width:15%;
+}
+.progressGreen{
+    background-color:green; 
+    color:white; 
+    height:25px;
+    text-shadow:  0.05px 0px 2px #000000;
+    text-align:center;
+    line-height:25px;
+}
+.progressYellow{
+    background-color:yellow; 
+    color:white; 
+    height:25px;
+    text-shadow:  0.05px 0px 2px #000000;
+    text-align:center;
+    line-height:25px;
+}
+.progressRed{
+    background-color:red; 
+    color:white; 
+    height:25px;
+    text-shadow:  0.05px 0px 2px #000000;
+    text-align:center;
+    line-height:25px;
+}
+.card-body{
+    /* margin-top:20px;
+    margin-left:20px;
+    margin-right:20px;
+    margin-bottom:20px; */
+    margin: 30px 20px;
+}
+.card-text{
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    overflow:hidden;
+}
+.card:hover{
+    box-shadow: 0.1px 0.1px 2px dodgerblue;
+    background-color:#f8f8f8;
+    transform: scale(1.025) translateZ(0);
+}
+.card:not(.userCard):hover, .card:not(.commentCard):hover{
+    cursor:pointer;
+    /* width: unset !important; */
+}
+.card:not(.userCard):not(:hover){
+    box-shadow: 0.1px 0.1px 2px #000000;
+    background-color: white;
+    cursor:default;
+    /* width: unset !important; */
+}
+.card:not(.userCard):active .card:not(.commentCard):active{
+    box-shadow: inset 0.1px 0.1px 2px #000000;
+    background-color:#f8f8f8;
+    /* width: unset !important; */
+}
+.commentCard{
+    cursor:default !important;
+}
 .card{
     /* box-sizing: border-box !important;
     border: 1px solid darkgray !important;
@@ -34,13 +411,93 @@ a{
     display: inline-block !important;
     margin-right: 10px !important; 
     vertical-align: top !important;
+    box-shadow: 0.1px 0.1px 2px #000000;
+    background-color: white;
+    margin-bottom:15px;
+    margin-left:5px;
+    /* font-size: 1.5vh; */
+}
+.dashboardCard{
+    height:250px;
+    width:250px;
+}
+.unfinishedTaskCard{
+    height:405px;
+    width:260px;
+}
+.userCard{
+    height:110px;
+    width:260px;
+}
+.taskCard{
+    height:450px;
+    width:260px;
+}
+.taskShortCard{
+    height:425px;
+    width:260px;
+}
+.projectCard{
+    height:220px;
+    width:200px;
+}
+.exploreCard{
+    height:210px;
+    width:200px;
+}
+.tagList{
+        display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    overflow:hidden;
+}
+#milestoneList{
+    overflow:auto;
+    overflow-x: hidden;
+    height: 180px;
+}
+#waitlist{
+    overflow:auto; 
+    overflow-x: hidden; 
+    height: 300px;
+}
+#exploreArea{
+    margin-left: auto;
+    margin-right: auto;
+}
+.hubLogo.customTheme{
+    color:lightgray;
 }
 .hubLogo{
-    color:dodgerblue;    
+    color:dodgerblue; 
+}
+#copyright{
+    color:black;
+    --switch: calc((var(--light) - var(--threshold)) * -100%);
+    color: hsl(0, 0%, var(--switch))!important;   
+}
+#logo{
+    color:dodgerblue;
+    --switch: calc((var(--light) - var(--threshold)) * -100%);
+    color: hsl(0, 0%, var(--switch))!important;   
+}
+.groupLogo{
+    color:#5e5e5e;
+}
+#unfinishedTasksArea{
+    margin-left:auto;
+    margin-right:auto;
+}
+#sloganArea{
+    margin-top:2%;
+    text-align: center;
+}
+.percentProgress{
+    color:black;
 }
 /* .navbar-nav{
     background-color: white !important;
-} */
+}
 @font-face {
     font-family: "Bahnschrift";
     src: url(/assets/bahnschrift.ttf);
