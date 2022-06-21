@@ -6,7 +6,10 @@ class ApplicationController < ActionController::Base
     User.find(session[:user_id]) if session[:user_id]
   end
   helper_method :current_user
-
+  def current_organization
+    Organization.find_by(users_id:session[:user_id]) if session[:user_id]
+  end
+  helper_method :current_organization
   def require_login
     redirect_to '/' if session[:user_id] == nil
   end
